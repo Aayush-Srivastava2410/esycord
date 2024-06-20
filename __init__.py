@@ -26,7 +26,7 @@ from typing import NamedTuple, Literal
 
 from .bot import *
 from .slash import *
-from .variable_functions import *
+from .data import *
 import discord
 
 class VersionInfo(NamedTuple):
