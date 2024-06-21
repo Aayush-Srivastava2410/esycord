@@ -9,11 +9,11 @@ discord bot.
 
 
 :lisence: MIT
-:copyright: None
+:copyright: 2024-Present Aayush Srivastava
 '''
 
 __title__ ='Easycord Data Handling Module'
 __author__ ='aayush.2410'
 __version__ ='0.1'
 __lisence__ ='MIT'
-
+__copyright__ = '2024-Present Aayush Srivastava'
