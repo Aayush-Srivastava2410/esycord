@@ -6,7 +6,7 @@ for all those who wanna make a Discord
 bot but dont have much experience with
 Discord's API Wrapper.
 
-:copyright: None
+:copyright: (c) 2024 Aayush Srivastava
 :license: MIT
 """
 

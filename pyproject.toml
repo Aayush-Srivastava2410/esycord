@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "easycord"
+version = "Alpha 0.1"
+
+dependencies = ["discord", "aiohttp"]
+requires-python = ">3.8"
+
+authors =[
+    { name = "Aayush Srivastava", discord = "aayush.2410"}
+    ]
+
+description = "The most beginner friendly discord package"
+readme = {file = "README.txt", content-type = "text/markdown"}
+
+keywords = ["discord", "beginner discord", "easycord", "discord simple"]
+
+license = "MIT"
+
+classifiers = [
+  # How mature is this project? Common values are
+  #   3 - Alpha
+  #   4 - Beta
+  #   5 - Production/Stable
+  "Development Status :: 3 - Alpha",
+
+  # Indicate who your project is intended for
+  "Intended Audience :: Beginners on discord.py",
+  "Topic :: Easier resources :: Discord",
+
+  # Pick your license as you wish (see also "license" above)
+  "License :: OSI Approved :: MIT License",
+
+  # Specify the Python versions you support here.
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11"
+]
