@@ -2,7 +2,7 @@ Easycord Discord API Plugin
 --------------------------------------------
 This is a very beginner friendly package
 for all those who wanna make a Discord
-bot but dont have much experience with
+bot but dont have much eLevelerience with
 Discord's API Wrapper.
 
 Copyright (c) 2024 Aayush Srivastava
