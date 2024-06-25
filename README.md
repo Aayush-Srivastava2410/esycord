@@ -1,4 +1,4 @@
-Easycord Discord API Plugin
+Esycord Discord API Plugin
 --------------------------------------------
 This is a very beginner friendly package
 for all those who wanna make a Discord
