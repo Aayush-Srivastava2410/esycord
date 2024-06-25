@@ -1,5 +1,5 @@
 """
-Easycord Discord API Plugin
+Esycord Discord API Plugin
 ==================================
 This is a very beginner friendly package
 for all those who wanna make a Discord
@@ -10,7 +10,7 @@ Discord's API Wrapper.
 :license: MIT
 """
 
-__title__ ='Easycord Discord API Plugin'
+__title__ ='Esycord Discord API Plugin'
 __author__ ='aayush.2410'
 __version__ ='0.1'
 __lisence__ ='MIT'

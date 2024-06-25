@@ -1,4 +1,4 @@
-'''Easycord Data Handling Module
+'''Esycord Data Handling Module
 ================================
 This is the most unique and convenient 
 thing I tried to make for you beginers.
