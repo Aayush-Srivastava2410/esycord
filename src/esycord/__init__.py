@@ -12,7 +12,7 @@ Discord's API Wrapper.
 
 __title__ ='Esycord Discord API Plugin'
 __author__ ='aayush.2410'
-__version__ ='0.1'
+__version__ ='0.2'
 __lisence__ ='MIT'
 
 
@@ -36,7 +36,7 @@ class VersionInfo(NamedTuple):
     serial: int
 
 
-version_info: VersionInfo = VersionInfo(major=0, minor=1, releaselevel='alpha', serial=0)
+version_info: VersionInfo = VersionInfo(major=0, minor=2, releaselevel='alpha', serial=0)
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
