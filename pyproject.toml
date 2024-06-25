@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "esycord"
 version = "0.1"
 
-dependencies = ["discord", "aiohttp"]
+dependencies = ["discord==2.3.2", "aiohttp==3.9.5"]
 requires-python = ">3.8"
 
 authors =[
