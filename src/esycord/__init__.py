@@ -14,6 +14,8 @@ __title__ ='Esycord Discord API Plugin'
 __author__ ='aayush.2410'
 __version__ ='0.2'
 __lisence__ ='MIT'
+__repository__ = 'https://github.com/Aayush-Srivastava2410/esycord'
+__issues__ ='https://github.com/Aayush-Srivastava2410/esycord/issues'
 
 
 
@@ -25,7 +27,6 @@ from typing import NamedTuple, Literal
 
 
 from .esycord import *
-from .data import *
 import discord
 
 class VersionInfo(NamedTuple):

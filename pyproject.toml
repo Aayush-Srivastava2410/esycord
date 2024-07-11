@@ -36,7 +36,11 @@ classifiers = [
 description = "The most beginner friendly discord package"
 readme = {file = "README.md", content-type = "text/markdown"}
 
-keywords = ["discord", "beginner discord", "easycord", "discord simple"]
+keywords = ["discord", "beginner discord", "easycord", "discord simple", 'esycord', 'Discord bot maker']
 
 license = "MIT"
 
+[project.urls]
+Repository = "https://github.com/Aayush-Srivastava2410/esycord"
+Issues = "https://github.com/Aayush-Srivastava2410/esycord/issues"
+Documentation = "https://github.com/Aayush-Srivastava2410/esycord/wiki"
