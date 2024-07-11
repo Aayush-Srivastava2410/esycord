@@ -24,8 +24,7 @@ import logging
 from typing import NamedTuple, Literal
 
 
-from .bot import *
-from .slash import *
+from .esycord import *
 from .data import *
 import discord
 
@@ -36,7 +35,7 @@ class VersionInfo(NamedTuple):
     serial: int
 
 
-version_info: VersionInfo = VersionInfo(major=0, minor=2, releaselevel='alpha', serial=0)
+version_info: VersionInfo = VersionInfo(major=0, minor=5, releaselevel='beta', serial=0)
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 

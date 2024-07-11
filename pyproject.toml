@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "esycord"
-version = "0.2"
+version = "0.5"
 
 dependencies = ["discord==2.3.2", "aiohttp==3.9.5"]
 requires-python = ">3.8"
@@ -12,6 +12,26 @@ requires-python = ">3.8"
 authors =[
     { name = "Aayush Srivastava", discord = "aayush.2410"}
     ]
+
+classifiers = [
+  # How mature is this project? Common values are
+  #   3 - Alpha
+  #   4 - Beta
+  #   5 - Production/Stable
+  "Development Status :: 4 - Beta",
+
+  # Indicate who your project is intended for
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Build Tools",
+
+  # Pick your license as you wish (see also "license" above)
+  "License :: OSI Approved :: MIT License",
+
+  # Specify the Python versions you support here.
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+]
 
 description = "The most beginner friendly discord package"
 readme = {file = "README.md", content-type = "text/markdown"}
