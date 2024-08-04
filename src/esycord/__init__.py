@@ -11,8 +11,9 @@ Discord's API Wrapper.
 """
 
 __title__ ='Esycord Discord API Plugin'
-__author__ ='aayush.2410'
-__version__ ='0.2'
+__author__ ='Aayush Srivastava'
+__contact__ = 'https://discord.com/users/'
+__version__ ='1.0'
 __lisence__ ='MIT'
 __repository__ = 'https://github.com/Aayush-Srivastava2410/esycord'
 __issues__ ='https://github.com/Aayush-Srivastava2410/esycord/issues'
@@ -27,7 +28,6 @@ from typing import NamedTuple, Literal
 
 
 from .esycord import *
-import discord
 
 class VersionInfo(NamedTuple):
     major: int
@@ -36,7 +36,7 @@ class VersionInfo(NamedTuple):
     serial: int
 
 
-version_info: VersionInfo = VersionInfo(major=0, minor=5, releaselevel='beta', serial=0)
+version_info: VersionInfo = VersionInfo(major=1, minor=0, releaselevel='final', serial=0)
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 

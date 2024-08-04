@@ -1,9 +1,10 @@
 from discord.ext import commands
+from discord import FFmpegPCMAudio
 from discord import Intents
 import discord
 import json
 from typing import Optional
-
+import os
 
 
 ## Hello Beautiful human :D
@@ -15,9 +16,9 @@ from typing import Optional
 
 class Bot:   
     '''
-    Bot client
+    `Class` Bot
     ----------------------------------------------------------------
-    Represents your discord bot client.
+    Represents your discord bot and the functions available.
     '''
     def __init__(self, command_prefix:str, intents:Intents):
         
@@ -25,6 +26,7 @@ class Bot:
         self.command_prefix = command_prefix
         self.intents = intents
         self.bot = commands.Bot(command_prefix=command_prefix, intents=intents)
+    
         
     async def dm_user(self, user: discord.User, user_id:discord.User.id, message: str)->ValueError:
         """Sends a direct message to a user.
@@ -87,8 +89,35 @@ class Bot:
         except Exception as e:
             raise ValueError('Error logging in.', e)
         
+    def client(self):
+        '''Represents the bot client'''
+        return self.bot
+        
+
+
+
+
          
 class Data:
+    '''`Class` Data: esycord Data Handling module
+    ----------------------------------------------------------------
+    Uses json as a data object to store basic bot values permanently.
+    '''
+    def __init__(path):
+        os.makedirs('./vars/user')
+        os.makedirs('./vars/guild')
+        os.makedirs('./vars/channel/xp')
+
+    def test_working():
+        try:
+            with open(r'vars/user/test.json', 'w') as test:
+                e = r'{"test":1234567890}'
+                json.dumps(test, e)
+            print('Working!')
+        except Exception:
+            print('Failed! Contact me with this message :-', Exception)
+    
+        
     def getUserVar(user: discord.User, variable: str, defaultValue: Optional[any])-> ValueError:
         '''Gets a variable value for a specefic user.
         ..versionadded::0.1
@@ -111,7 +140,7 @@ class Data:
                 x = getUserVar(user = ctx.user, variable = 'money', defaultValue = 1000)
                 await ctx.send(f'You have {x} Money')
         '''
-        if user or variable is None:
+        if user and variable is None:
             raise ValueError('User and variable must be specified')
         else:
             try:
@@ -146,7 +175,7 @@ class Data:
             async def setuser(ctx):
                 setUserVar(user = ctx.user, variable = 'money', value = 1000)
         '''
-        if user or variable is None:
+        if user and variable is None:
             raise ValueError('User and variable must be specified')
         else:
             try:
@@ -188,7 +217,7 @@ class Data:
                 await ctx.send(f'Your Level is 1 and XP is 99')
                 
         '''  
-        if channel or user is None:
+        if channel and user is None:
             raise ValueError("Channel and user must be specified")
         else:
             try:
@@ -223,7 +252,7 @@ class Data:
                 x = getUserXP(user=ctx.user, channel=ctx.channel)
                 await ctx.send(f'Your XP is {x}')
         '''  
-        if channel or user is None:
+        if channel and user is None:
             raise ValueError('Channel and user must be specified')
         else:
             try:
@@ -255,7 +284,7 @@ class Data:
                 x = getUserLevel(user=ctx.user, channel=ctx.channel)
                 await ctx.send(f'Your Level is {x}')
         '''  
-        if channel or user is None:
+        if channel and user is None:
             raise ValueError('Channel and user must be specified')
         else:
             try:
@@ -289,7 +318,7 @@ class Data:
                 x = getChannelVar(Channel = ctx.channel, variable = 'votes', defaulValue = 0)
                 await ctx.send(f'This channel has {x} votes')
         '''
-        if channel or variable is None:
+        if channel and variable is None:
             raise ValueError('Channel and variable must be specified!')
         else:
             try:
@@ -322,7 +351,7 @@ class Data:
                 setChannelVar(Channel = ctx.channel, variable = 'votes', value = 0)
                 
         '''
-        if channel or variable is None:
+        if channel and variable is None:
             raise ValueError('Channel or variable must be specified')
         else:    
             try:
@@ -360,7 +389,7 @@ class Data:
                 x = getGuildVar(guild = ctx.guild, variable = 'votes', defaulValue = 0)
                 await ctx.send(f'This server has {x} votes')
         '''
-        if guild or variable is None:
+        if guild and variable is None:
             raise ValueError('Guild and variable must be specified!')
         else:
             try:
@@ -394,7 +423,7 @@ class Data:
             async def setguild(ctx):
                 setGuildVar(guild = ctx.guild, variable = 'votes', value = 1)
         '''
-        if guild or variable is None:
+        if guild and variable is None:
             raise ValueError('Guild and variable must be specified!')
         else:
             try:
@@ -407,4 +436,4 @@ class Data:
                 with open('./vars/guild/'+variable+'.json', 'w') as file:
                     data = {str(guild.id): value}
                     with open('./vars/guild/'+variable+'.json', 'w') as file:
-                        json.dump(data, file, indent=4)
+                        json.dump(data, file, indent=4)   
