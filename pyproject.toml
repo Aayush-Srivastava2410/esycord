@@ -4,9 +4,9 @@ build-backend = "hatchling.build"
 
 [project]
 name = "esycord"
-version = "1.1"
+version = "1.2"
 
-dependencies = ["discord==2.3.2", "aiohttp==3.9.5"]
+dependencies = ["discord==2.3.2", "aiohttp==3.9.5","pynacl==1.5.0" ]
 requires-python = ">3.8"
 
 authors =[
@@ -14,11 +14,7 @@ authors =[
     ]
 
 classifiers = [
-  # How mature is this project? Common values are
-  #   3 - Alpha
-  #   4 - Beta
-  #   5 - Production/Stable
-  "Development Status :: 4 - Beta",
+  "Development Status :: 5 - Production/Stable",
 
   # Indicate who your project is intended for
   "Intended Audience :: Developers",
@@ -31,10 +27,11 @@ classifiers = [
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
 ]
 
 description = "The most beginner friendly discord package"
-readme = {file = "README.md", content-type = "text/markdown"}
+readme = {file = "README.rst", content-type = "text/x-rst"}
 
 keywords = ["discord", "beginner discord", "easycord", "discord simple", 'esycord', 'Discord bot maker']
 
@@ -44,3 +41,4 @@ license = "MIT"
 Repository = "https://github.com/Aayush-Srivastava2410/esycord"
 Issues = "https://github.com/Aayush-Srivastava2410/esycord/issues"
 Documentation = "https://github.com/Aayush-Srivastava2410/esycord/wiki"
+Discord = "https://discord.com/users/795873954668871731"

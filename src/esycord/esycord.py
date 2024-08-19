@@ -1,3 +1,4 @@
+from deprecated import deprecated
 from discord.ext import commands
 from discord import FFmpegPCMAudio
 import requests
@@ -7,11 +8,17 @@ import json
 from typing import Optional
 import os
 
-
 ## Hello Beautiful human :D
 ## This code kinda tres
 ## Help me by making it better :D
 ## I- i lov u :))
+
+
+class DataError(FileNotFoundError):...
+class BotException(discord.ClientException):...
+class WebhookException(requests.ConnectionError):...
+class WebhookExistsError(ConnectionError):...
+class IllegalToken(ConnectionRefusedError):...
 
 
 
@@ -26,12 +33,11 @@ class Bot:
 
         self.command_prefix = command_prefix
         self.intents = intents
-        self.bot = commands.Bot(command_prefix=command_prefix, intents=intents)
+        self.bot = commands.Bot(command_prefix=command_prefix, intents=intents).run
     
     
     async def dm_user(self, user: discord.User, user_id:discord.User.id, message: str):  # type: ignore
         """Sends a direct message to a user.
-        .. versionadded::0.1
         ----------------------------------------------------------------
         Attributes
         
@@ -42,19 +48,21 @@ class Bot:
         message: `str`
             Message to send to the user.
         """
-        if user and user_id is None:
-            raise ValueError("User or user_id are required!")
-        else:
-            try:
-                t=self.bot.fetch_user(user.id)
-                await t.send(message)
-            except:
-                t=self.bot.fetch_user(user_id)
-                await t.send(message)
-
-    async def set_bot_presence(self, state:discord.Status, activity: discord.Activity):
+        try:
+            if user and user_id is None:
+                raise ValueError("User or user_id are required!")
+            else:
+                try:
+                    t=self.bot.fetch_user(user.id)
+                    await t.send(message)
+                except:
+                    t=self.bot.fetch_user(user_id)
+                    await t.send(message)
+        except Exception as e:
+            raise BotException(f'Error logging in: {e}')
+        
+    async def set_bot_presence(self, state:discord.Status, activity: discord.Activity=None):
         '''Changes the discord Client presence
-        .. versionadded::0.1
         ----------------------------------------------------------------
         Attributes
         self.bot: discord.ext.commands.Bot
@@ -68,8 +76,11 @@ class Bot:
         -------------------------------------------------------------------
         Works under an async function with await
         '''
-        await self.bot.change_presence(status=state, activity=activity)
-    
+        try:
+            await self.bot.change_presence(status=state, activity=activity)
+        except Exception as e:
+            raise BotException(f'Error Changing Presence: {e}')
+
     def run(self, token:str)->discord.Client.connect:
         '''
         Runs the bot with the provided token.
@@ -85,9 +96,12 @@ class Bot:
                 print('Successfully connected to Discord. Thank you for using esycord! :D')
                 print(f'Logged in as {self.bot.user} and ID {self.bot.user.id}')
                 print('-----------USE CTRL+C TO LOGOUT------------')
+        except ConnectionRefusedError:
+            raise IllegalToken('Illegal token passed')
         except Exception as e:
-            raise ValueError('Error logging in.', e)
+            raise BotException(f'Error logging in: {e}')
         
+    @property
     def client(self):
         '''Represents the bot client'''
         return self.bot
@@ -109,6 +123,8 @@ class Bot:
 
         '''
         return self.bot.command(pass_context=pass_context)
+
+    @property 
     def user(self):
         '''Represents connected client.
         '''
@@ -119,11 +135,12 @@ class Bot:
 
 
 
-         
+@deprecated(reason="Just dosent work Idk", version='1.0.1', action="error")        
 class Data:
     '''`Class` Data: esycord Data Handling module
     ----------------------------------------------------------------
     Uses json as a data object to store basic bot values permanently.
+    ## DEPRECATED!!!
     '''
     def __init__():
         os.makedirs('./vars/user')
@@ -580,8 +597,8 @@ class Webhook:
             The message to send.'''
         payload = {"content": message}
         req=requests.post(self.webhook_url, headers=self.headers, json=payload)
-        if req.status_code == 204:print('Sent message.')
-        elif req.status_code == 404:raise ConnectionError('Invalid Webhook.')
+        if req.status_code == 204:print(f'[esycord.Webhook] Sent message.')
+        elif req.status_code == 404: raise ConnectionRefusedError(f"Error Raised: {req.status_code}")
         else:raise Exception(f'Error sending message: {req.status_code}')
 
     def send_embeded_message(self, embed:discord.Embed):
@@ -593,20 +610,20 @@ class Webhook:
             The embed to send.'''
         payload = {"embeds": [embed.to_dict()]}
         req=requests.post(self.webhook_url, headers=self.headers, json=payload)
-        if req.status_code == 204:print('Sent embed.')
+        if req.status_code == 204:print(f'[esycord.Webhook] Sent message.')
         elif req.status_code == 404:raise ConnectionError('Invalid Webhook.')
         else:raise Exception(f'Error sending embed: {req.status_code}')
     
-    def edit_message(self, message_id:discord.Message.id):# type: ignore
+    def edit_message(self, message_id:discord.Message.id, message:str):# type: ignore
         '''Edits a message by its ID.
         ----------------------------------------------------------------
         Attributes
         
         message_id: `class` discord.Message.id
             The ID of the message to edit.'''
-        payload = {"content": ""}
+        payload = {"content": message}
         req=requests.patch(f"{self.webhook_url}/messages/{message_id}", headers=self.headers, json=payload)
-        if req.status_code == 200:print('Edited message.')
+        if req.status_code == 200:print(f'[esycord.Webhook] Edited message content.')
         elif req.status_code == 404:raise ConnectionError('Invalid Webhook or Message ID.')
         else:raise Exception(f'Error editing message: {req.status_code}')
     
@@ -618,8 +635,37 @@ class Webhook:
         message_id: `class` discord.Message.id
             The ID of the message to delete.'''
         req=requests.delete(f"{self.webhook_url}/messages/{message_id}", headers=self.headers)
-        if req.status_code == 204:print('Deleted message.')
+        if req.status_code == 204:print(f'[esycord.Webhook] Deleted message.')
         elif req.status_code == 404:raise ConnectionError('Invalid Webhook or Message ID.')
         else:raise Exception(f'Error deleting message: {req.status_code}')
 
+
+class Troll:
+    '''uh...
+    ----------------------------------------------------------------
+    Find out urself?'''
+
+    def __init__(self,bot:Bot):
+        self.bot = bot
     
+    def spam_webhook(self, url: str, message:str, times:int):
+        '''it is what it says it is
+        '''
+        if times<=0:
+            raise ValueError('Really?')
+        else:
+            for i in range(times):
+                payload = {"content": message}
+                req=requests.post(url=url, headers={"Content-Type": "application/json"}, json=payload)
+                if req.status_code == 204:print(f'[esycord.Webhook] Sent message.')
+                elif req.status_code == 404: raise ConnectionRefusedError(f"Error Raised: {req.status_code}")
+                else:raise Exception(f'Error sending message: {req.status_code}')
+            
+    async def spam_user(self, user:discord.User,  message:str, times:int):
+        if times<=0:
+            raise ValueError('Really?')
+        else:
+            for i in range(times):
+                self.bot.dm_user(user=user, message=message)
+
+            
