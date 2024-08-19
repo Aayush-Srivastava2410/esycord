@@ -1,5 +1,6 @@
 from discord.ext import commands
 from discord import FFmpegPCMAudio
+import requests
 from discord import Intents
 import discord
 import json
@@ -20,15 +21,15 @@ class Bot:
     ----------------------------------------------------------------
     Represents your discord bot and the functions available.
     '''
-    def __init__(self, command_prefix:str, intents:Intents):
+    def __init__(self, command_prefix:str, intents:discord.Intents):
         
 
         self.command_prefix = command_prefix
         self.intents = intents
         self.bot = commands.Bot(command_prefix=command_prefix, intents=intents)
     
-        
-    async def dm_user(self, user: discord.User, user_id:discord.User.id, message: str)->ValueError:
+    
+    async def dm_user(self, user: discord.User, user_id:discord.User.id, message: str):  # type: ignore
         """Sends a direct message to a user.
         .. versionadded::0.1
         ----------------------------------------------------------------
@@ -40,8 +41,6 @@ class Bot:
             ID of User to send the message to.
         message: `str`
             Message to send to the user.
-        ----------------------------------------------------------------
-        Works under an async function with await 
         """
         if user and user_id is None:
             raise ValueError("User or user_id are required!")
@@ -71,7 +70,7 @@ class Bot:
         '''
         await self.bot.change_presence(status=state, activity=activity)
     
-    def run(self, token:str)->ValueError:
+    def run(self, token:str)->discord.Client.connect:
         '''
         Runs the bot with the provided token.
         ----------------------------------------------------------------
@@ -92,8 +91,31 @@ class Bot:
     def client(self):
         '''Represents the bot client'''
         return self.bot
-        
+    
+    def event(self):
+        '''Returns a decorator for event handling.
+        ----------------------------------------------------------------
+        Returns
+        -------
+        decorator: `function`
+            A decorator for event handling.
+        ----------------------------------------------------------------
+        Works under an async function with await
+        '''
+        return self.bot.event
+    
+    def command(self, pass_context:bool=True):
+        '''Returns a decorator for command handling.
 
+        '''
+        return self.bot.command(pass_context=pass_context)
+    def user(self):
+        '''Represents connected client.
+        '''
+        id= self.bot.user.id
+        return self.bot.user
+        
+  
 
 
 
@@ -103,22 +125,26 @@ class Data:
     ----------------------------------------------------------------
     Uses json as a data object to store basic bot values permanently.
     '''
-    def __init__(path):
+    def __init__():
         os.makedirs('./vars/user')
         os.makedirs('./vars/guild')
         os.makedirs('./vars/channel/xp')
 
-    def test_working():
+    def test_working()->print:
+        '''Tests the working of the module.
+        ----------------------------------------------------------------
+        Creates a user variable "test" and writes a test dict into it.
+        '''
         try:
             with open(r'vars/user/test.json', 'w') as test:
                 e = r'{"test":1234567890}'
-                json.dumps(test, e)
+                json.dumps(test, e, indent=4)
             print('Working!')
         except Exception:
             print('Failed! Contact me with this message :-', Exception)
     
         
-    def getUserVar(user: discord.User, variable: str, defaultValue: Optional[any])-> ValueError:
+    def getUserVar(user: discord.User, variable: str, defaultValue: Optional[any])-> dict:
         '''Gets a variable value for a specefic user.
         ..versionadded::0.1
         ----------------------------------------------------------------
@@ -134,11 +160,12 @@ class Data:
             The default value for the variable. If not provided, Saves `None`.
         ----------------------------------------------------------------
         Example
-        ..code-block:: python3
-            @bot.bot.command
+        ```py
+            @Bot.client.command
             async def get(ctx):
                 x = getUserVar(user = ctx.user, variable = 'money', defaultValue = 1000)
                 await ctx.send(f'You have {x} Money')
+        ```
         '''
         if user and variable is None:
             raise ValueError('User and variable must be specified')
@@ -154,7 +181,7 @@ class Data:
                     return data[str(user.id)]
                 
 
-    def setUserVar(user : discord.User, variable: str, value):
+    def setUserVar(user : discord.User, variable: str, value)->None:
         '''Sets a variable value for a specefic user.
         ..versionadded::0.1
         ----------------------------------------------------------------
@@ -170,10 +197,11 @@ class Data:
             The default value for the variable. If not provided, Saves `None`.
         ----------------------------------------------------------------
         Example
-        ..code-block:: python3
-            @bot.bot.command
+        ```py
+            @Bot.client.command
             async def setuser(ctx):
                 setUserVar(user = ctx.user, variable = 'money', value = 1000)
+        ```
         '''
         if user and variable is None:
             raise ValueError('User and variable must be specified')
@@ -190,9 +218,8 @@ class Data:
                     with open('./vars/user/'+variable+'.json', 'w') as file:
                         json.dump(data, file, indent=4)
 
-    def setUserXP_or_Level(channel:discord.TextChannel, user:discord.User, xp:int, level:int)->ValueError:
+    def setUserXP_or_Level(channel:discord.TextChannel, user:discord.User, xp:int, level:int)->None:
         '''Sets a user XP or Level for a given channel.
-        ..inspiration:: MEE6
         ..versionadded::0.1
         ----------------------------------------------------------------
         Attributes
@@ -210,28 +237,28 @@ class Data:
             The level of the user. Defaults to 0.
         ----------------------------------------------------------------
         Example
-        ..code-block:: python3
-            @bot.bot.command
+        ```py
+            @Bot.client.command
             async def setChannel(ctx):
                 setUserXP(channel = ctx.channel, user = ctx.user, xp =99, level = 1)
                 await ctx.send(f'Your Level is 1 and XP is 99')
-                
+        ```
         '''  
         if channel and user is None:
             raise ValueError("Channel and user must be specified")
         else:
             try:
-                with open('./vars/channel/xp/'+channel.id+'.json', 'r') as file:
+                with open('./vars/channel/xp/'+channel.id+'json', 'r') as file:
                     data=json.load(file)
                     data[str(user.id)] = {'level':level,'xp':xp}
                     with open(file,'w') as file:
                         json.dump(data, file, indent=4)
             except Exception as e:
-                with open('./vars/channel/xp/'+channel.id+'.json', 'w') as file:
+                with open('./vars/channel/xp/'+channel.id+'json', 'w') as file:
                     data={str(user.id):{'level':level,'xp':xp}}
                     json.dump(data, file, indent=4)
 
-    def getUserXP(channel:discord.TextChannel, user:discord.User):
+    def getUserXP(channel:discord.TextChannel, user:discord.User)->dict:
         '''Gets a user XP for a given channel.
         ..inspiration:: MEE6
         ..versionadded::0.1
@@ -247,7 +274,7 @@ class Data:
         ----------------------------------------------------------------
         Example
         ..code-block:: python3
-            @bot.bot.command
+            @Bot.client.command
             async def setChannel(ctx):
                 x = getUserXP(user=ctx.user, channel=ctx.channel)
                 await ctx.send(f'Your XP is {x}')
@@ -263,7 +290,7 @@ class Data:
                 with open('./vars/channel/xp/'+channel.id+'.json', 'w') as file:
                     return 0
                 
-    def getUserLevel(channel:discord.TextChannel, user:discord.User):
+    def getUserLevel(channel:discord.TextChannel, user:discord.User)->None:
         '''Gets a user Level for a given channel.
         ..inspiration:: MEE6
         ..versionadded::0.1
@@ -278,11 +305,12 @@ class Data:
         
         ----------------------------------------------------------------
         Example
-        ..code-block:: python3
-            @bot.bot.command
+        ```py
+            @Bot.client.command
             async def setChannel(ctx):
                 x = getUserLevel(user=ctx.user, channel=ctx.channel)
                 await ctx.send(f'Your Level is {x}')
+        ```
         '''  
         if channel and user is None:
             raise ValueError('Channel and user must be specified')
@@ -297,7 +325,7 @@ class Data:
                 
 
 
-    def getChannelVar(channel:discord.TextChannel, variable:str, defaultValue:Optional[any]):
+    def getChannelVar(channel:discord.TextChannel, variable:str, defaultValue:Optional[any])->dict:
         '''Gets a variable value for a specefic Channel.
         ..versionadded::0.1
         ----------------------------------------------------------------
@@ -312,11 +340,12 @@ class Data:
             The default value for the variable. If not provided, Saves `None`.
         ----------------------------------------------------------------
         Example
-        ..code-block:: python3
-            @bot.bot.command
+        ```py
+            @Bot.client.command
             async def getChannel(ctx):
                 x = getChannelVar(Channel = ctx.channel, variable = 'votes', defaulValue = 0)
                 await ctx.send(f'This channel has {x} votes')
+        ```
         '''
         if channel and variable is None:
             raise ValueError('Channel and variable must be specified!')
@@ -330,7 +359,7 @@ class Data:
                     data = {str(channel.id): defaultValue}
                     json.dump(data, file, indent=4)
                     return data[str(channel.id)]
-    def setChannelVar(channel:discord.TextChannel, variable: str, value:any):
+    def setChannelVar(channel:discord.TextChannel, variable: str, value:any)->None:
         '''Gets a variable value for a specefic Channel.
         ..versionadded::0.1
         ----------------------------------------------------------------
@@ -345,11 +374,11 @@ class Data:
             The value for the variable. If not provided, Saves `None`.
         ----------------------------------------------------------------
         Example
-        ..code-block:: python3
-            @bot.bot.command
+        ```py
+            @Bot.client.command
             async def setChannel(ctx):
                 setChannelVar(Channel = ctx.channel, variable = 'votes', value = 0)
-                
+        ```
         '''
         if channel and variable is None:
             raise ValueError('Channel or variable must be specified')
@@ -383,11 +412,12 @@ class Data:
             The default value for the variable. If not provided, Saves `None`.
         ----------------------------------------------------------------
         Example
-        ..code-block:: python3
-            @bot.bot.command
+        ```py
+            @Bot.client.command
             async def getguild(ctx):
                 x = getGuildVar(guild = ctx.guild, variable = 'votes', defaulValue = 0)
                 await ctx.send(f'This server has {x} votes')
+        ```
         '''
         if guild and variable is None:
             raise ValueError('Guild and variable must be specified!')
@@ -418,10 +448,11 @@ class Data:
             The default value for the variable. If not provided, Saves `None`.
         ----------------------------------------------------------------
         Example
-        ..code-block:: python3
-            @bot.bot.command
+        ```py
+            @Bot.client.command
             async def setguild(ctx):
                 setGuildVar(guild = ctx.guild, variable = 'votes', value = 1)
+        ```
         '''
         if guild and variable is None:
             raise ValueError('Guild and variable must be specified!')
@@ -437,3 +468,158 @@ class Data:
                     data = {str(guild.id): value}
                     with open('./vars/guild/'+variable+'.json', 'w') as file:
                         json.dump(data, file, indent=4)   
+
+
+class Voice:
+    '''`Class` Voice
+    ----------------------------------------------------------------
+    Voice functions for your discord bot. 
+
+    Attributes
+
+    client: `class` esycord.Bot()
+        Bot instance.
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORTANT:
+    > FFMPEG requires to be configured on your environment variables.  
+
+    > A (`Class` Bot) instance is required to be hosted.'''
+    def __init__(self, client:Bot):
+        self.client = client.client()
+    
+    
+    async def join(self,channel:discord.VoiceChannel):
+        '''Joins a voice channel.
+        ----------------------------------------------------------------
+        Attributes
+        
+        channel: `class` discord.VoiceChannel
+            The channel to connect to.'''
+        voice_client = await channel.connect(reconnect=True)
+    
+    async def disconnect(self, guild:discord.Guild):
+        '''Disconnects from a voice channel.
+        ----------------------------------------------------------------
+        Attributes
+        
+        channel: `class` discord.Guild
+            The guild to disconnect from.'''
+        if guild.voice_client:
+            await guild.voice_client.disconnect()
+        else:
+            raise discord.ClientException('Not Connected to voice channel in the given guild.')
+    
+    async def play(self, source: str, channel: discord.VoiceChannel):
+        '''Plays audio from a source.
+        ----------------------------------------------------------------
+        Attributes
+        
+        source: `str`
+            The source of the audio file.
+        
+        channel: `class` discord.VoiceChannel
+            Channel to play the audio in. Joins the channel if isn't in it.
+        '''
+        voice_client = await channel.connect(reconnect=True)
+        voice_client.play(discord.FFmpegPCMAudio(source))
+    
+    async def pause(self, channel:discord.VoiceChannel):
+        '''Pauses the current audio.
+        ----------------------------------------------------------------
+        Attributes
+        
+        channel: `class` discord.VoiceChannel
+            The voice channel in which the audio is playing.'''
+        voice_client = discord.utils.get(self.client.voice_clients, guild=channel.guild)
+        if voice_client.is_playing():
+            voice_client.pause()
+        else:
+            raise discord.ClientException('Not playing audio in the given voice channel.')
+    
+    async def resume(self, channel: discord.VoiceChannel):
+        '''Resumes the paused audio.
+        ----------------------------------------------------------------
+        Attributes
+        
+        channel: `class` discord.VoiceChannel
+            The voice channel in which the audio is playing.'''
+        voice_client = discord.utils.get(self.client.voice_clients, guild=channel.guild)
+        if voice_client.is_paused():
+            voice_client.resume()
+        else:
+            raise discord.ClientException('Not paused audio in the given voice channel.')
+        
+    async def stop(self, channel: discord.VoiceChannel):
+        '''Stops the current audio.
+        ----------------------------------------------------------------
+        Attributes
+        
+        channel: `class` discord.VoiceChannel
+            The voice channel in which the audio is playing.'''
+        voice_client = discord.utils.get(self.client.voice_clients, guild=channel.guild)
+        if voice_client.is_playing():
+            voice_client.stop()
+        else:
+            raise discord.ClientException('Not playing audio in the given voice channel.')
+    
+
+class Webhook:
+    '''`Class` Webhook
+    ----------------------------------------------------------------
+    Webhook functions'''
+    def __init__(self, webhook_url: str):
+        self.webhook_url = webhook_url
+        self.headers = {"Content-Type": "application/json"}
+
+    def send_message(self, message:str):
+        '''Sends a message to the webhook.
+        ----------------------------------------------------------------
+        Attributes
+        
+        message: `str`
+            The message to send.'''
+        payload = {"content": message}
+        req=requests.post(self.webhook_url, headers=self.headers, json=payload)
+        if req.status_code == 204:print('Sent message.')
+        elif req.status_code == 404:raise ConnectionError('Invalid Webhook.')
+        else:raise Exception(f'Error sending message: {req.status_code}')
+
+    def send_embeded_message(self, embed:discord.Embed):
+        '''Sends an embed to the webhook.
+        ----------------------------------------------------------------
+        Attributes
+        
+        embed: `class` discord.Embed
+            The embed to send.'''
+        payload = {"embeds": [embed.to_dict()]}
+        req=requests.post(self.webhook_url, headers=self.headers, json=payload)
+        if req.status_code == 204:print('Sent embed.')
+        elif req.status_code == 404:raise ConnectionError('Invalid Webhook.')
+        else:raise Exception(f'Error sending embed: {req.status_code}')
+    
+    def edit_message(self, message_id:discord.Message.id):# type: ignore
+        '''Edits a message by its ID.
+        ----------------------------------------------------------------
+        Attributes
+        
+        message_id: `class` discord.Message.id
+            The ID of the message to edit.'''
+        payload = {"content": ""}
+        req=requests.patch(f"{self.webhook_url}/messages/{message_id}", headers=self.headers, json=payload)
+        if req.status_code == 200:print('Edited message.')
+        elif req.status_code == 404:raise ConnectionError('Invalid Webhook or Message ID.')
+        else:raise Exception(f'Error editing message: {req.status_code}')
+    
+    def delete_message(self, message_id:discord.Message.id):# type: ignore
+        '''Deletes a message by its ID.
+        ----------------------------------------------------------------
+        Attributes
+        
+        message_id: `class` discord.Message.id
+            The ID of the message to delete.'''
+        req=requests.delete(f"{self.webhook_url}/messages/{message_id}", headers=self.headers)
+        if req.status_code == 204:print('Deleted message.')
+        elif req.status_code == 404:raise ConnectionError('Invalid Webhook or Message ID.')
+        else:raise Exception(f'Error deleting message: {req.status_code}')
+
+    

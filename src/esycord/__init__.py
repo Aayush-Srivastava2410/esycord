@@ -23,22 +23,20 @@ __issues__ ='https://github.com/Aayush-Srivastava2410/esycord/issues'
 __path__ = __import__('pkgutil').extend_path(__path__, __name__)
 
 
-import logging
-from typing import NamedTuple, Literal
-
+import __internals__
 
 from .esycord import *
 
-class VersionInfo(NamedTuple):
+class VersionInfo(__internals__.NamedTuple):
     major: int
     minor: int
-    releaselevel: Literal["alpha", "beta", "candidate", "final"]
+    releaselevel: __internals__.Literal["alpha", "beta", "candidate", "final"]
     serial: int
 
 
 version_info: VersionInfo = VersionInfo(major=1, minor=0, releaselevel='final', serial=0)
 
-logging.getLogger(__name__).addHandler(logging.NullHandler())
+__internals__.logging.getLogger(__name__).addHandler(__internals__.logging.NullHandler())
 
-del logging, NamedTuple, Literal, VersionInfo
+del __internals__.logging, __internals__.NamedTuple, __internals__.Literal, VersionInfo
 
