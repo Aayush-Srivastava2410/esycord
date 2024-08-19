@@ -54,7 +54,7 @@ Bot Example
 Links
 ------
 
-- `Documentation <https://github.com/Aayush-Srivastava2410/esycord/wiki>`
+- `Documentation <https://github.com/Aayush-Srivastava2410/esycord/wiki>`_
 - `Discord User <https://discord.gg/users/795873954668871731>`_
 
 Future
