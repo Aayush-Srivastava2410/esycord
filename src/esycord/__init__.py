@@ -22,24 +22,20 @@ __issues__ ='https://github.com/Aayush-Srivastava2410/esycord/issues'
 
 __path__ = __import__('pkgutil').extend_path(__path__, __name__)
 
-from .esycord import (
+from .__main__ import (
     Bot, 
-    Voice, 
-    Data,
+    Voice,
     Troll,
+    Data,
     BotException,
     WebhookException,
     WebhookExistsError,
-    DataError,
     IllegalToken,
     discord,
     commands,
     requests,
-    json,
-    os,
     Optional,
 )
-
 
 
 import logging

@@ -17,7 +17,7 @@ This is a very beginner friendly package for all those who wanna make a Discord 
 Installing
 ----------
 
-**Python 3.8 or higher is required**
+**Python 3.11 or higher is required**
 
 
 .. code:: sh
