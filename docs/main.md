@@ -1,7 +1,5 @@
 # Documentation
 
-
-
 ## `class` Bot(command_prefix, intents)
 
 Represents your discord bot and the functions available.
@@ -52,8 +50,12 @@ token: `str`
 
 ## `class` Data
 
-esycord Data Handling Module  
-This module is very buggy. It will be fixed soon.
+esycord Data Handling Module now uses python's in built `sqlite3` module to store values permanently.
+
+_Attributes_  
+
+custom_db: `path`  
+ Path to connect to a custom database. If left empty, creates a *database.db* in the local directory or connects directly if created.
 
 ### `method` getUserVar(user, variable, defaultValue):
 
@@ -61,14 +63,13 @@ Gets a variable value for a specefic user.
 
 _Attributes_
 
-user: `class` discord.User
-
-    The user the data should be retrieved.
+user: `class` discord.User  
+ The user the data should be retrieved.
 
 variable : `str`  
  The name of the variable to retrieve.
 
-defaultValue: `class` Optional[any]  
+defaultValue: `any`. None if empty.
  The default value for the variable. If not provided, Saves `None`.
 
 Example
@@ -92,7 +93,7 @@ user: `class` discord.User
 variable : `str`  
  The name of the variable to set.
 
-value: `any` Optional[any]  
+value: `any`. None if empty. 
  The default value for the variable. If not provided, Saves `None`.
 
 Example
@@ -103,72 +104,6 @@ Example
         setUserVar(user = ctx.user, variable = 'money', value = 1000)
 ```
 
-### `method` setUserXP_or_Level(channel, user, xp, level):
-
-Sets a user XP or Level for a given channel.
-
-_Attributes_
-
-channel: `class` discord.TextChannel  
- The channel of which the data should be set.
-
-user : `class` discord.User  
- The user of whom the data should be set.
-
-xp : `int`  
- The XP Level of the user. Defaults to 0.
-
-level : `int`  
- The level of the user. Defaults to 0.
-
-Example
-
-```py
-@Bot.client.command
-async def setChannel(ctx):
-    setUserXP(channel = ctx.channel, user = ctx.user, xp =99, level = 1)
-    await ctx.send(f'Your Level is 1 and XP is 99')
-```
-
-### `method` getUserXP(channel, user):
-
-Gets a user XP for a given channel.
-
-_Attributes_  
-channel: `class` discord.TextChannel  
- The channel of which the data should be set.
-
-user : `class` discord.User  
- The user of whom the data should be set.
-
-Example
-
-```py
-@Bot.client.command
-async def setChannel(ctx):
-    x = getUserXP(user=ctx.user, channel=ctx.channel)
-    await ctx.send(f'Your XP is {x}')
-```
-
-### `method` getUserLevel(channel, user):
-
-Gets a user Level for a given channel.
-
-_Attributes_  
-channel: `class` discord.TextChannel  
- The channel of which the data should be set.
-
-user : `class` discord.User  
- The user of whom the data should be set.
-
-Example
-
-```py
-@Bot.client.command
-async def setChannel(ctx):
-    x = getUserLevel(user=ctx.user, channel=ctx.channel)
-    await ctx.send(f'Your Level is {x}')
-```
 
 ### `method` getChannelVar(channel, variable, defaultValue):
 
@@ -182,7 +117,7 @@ channel: `class` discord.TextChannel
 variable : `str`  
  The name of the variable to retrieve.
 
-defaultValue: `class` Optional[any]  
+defaultValue: `any`. None if empty.
  The default value for the variable. If not provided, Saves `None`.
 
 Example
@@ -206,7 +141,7 @@ channel: `class` discord.TextChannel
 variable : `str`  
  The name of the variable to retrieve.
 
-value: `class` Optional[any]  
+value: `any`. None if empty. 
  The value for the variable. If not provided, Saves `None`.
 
 Example
@@ -228,7 +163,7 @@ guild: `class` discord.Guild
 variable : `str`  
  The name of the variable to retrieve.
 
-defaultValue: `class` Optional[any]  
+defaultValue: `any`. None if empty. 
  The default value for the variable. If not provided, Saves `None`.
 
 Example
@@ -251,7 +186,7 @@ guild: `class` discord.Guild
 variable : `str`  
  The name of the variable to retrieve.
 
-defaultValue: `class` Optional[any]  
+defaultValue: `any`. None if empty. 
  The default value for the variable. If not provided, Saves `None`.
 
 Example
@@ -274,3 +209,66 @@ client: `class` esycord.Bot()
 IMPORTANT:  
 FFMPEG requires to be configured on your environment variables.  
 A (`Class` Bot) instance is required to be hosted.
+
+### `method` join(channel):
+Joins a voice channel.
+
+_Attributes_
+        
+channel: `class` discord.VoiceChannel
+ The channel to connect to.
+
+### `method` disconnect(guild)
+Disconnects from a voice channel.
+
+_Attributes_
+
+channel: `class` discord.Guild
+    The guild to disconnect from.
+
+### `method` play(source, channel)
+Plays audio from a source.
+
+_Attributes_
+
+source: `str`
+    The source of the audio file.
+
+channel: `class` discord.VoiceChannel  
+    Channel to play the audio in. Joins the channel if isn't in it.
+
+### `method` pause(channel)
+Pauses the current audio.
+
+_Attributes_
+        
+channel: `class` discord.VoiceChannel  
+    The voice channel in which the audio is playing.'''
+
+### `method` resume(channel)
+Resumes the paused audio.
+
+_Attributes_
+        
+channel: `class` discord.VoiceChannel  
+ The voice channel in which the audio is playing.
+
+### `method` stop(channel)
+Stops the current audio.
+
+Attributes
+
+channel: `class` discord.VoiceChannel  
+    The voice channel in which the audio is playing.'
+## `class` Webhook 
+Contains all functions for webhooks
+
+_Attributes_  
+webhook_url: `string`  
+ Url of the webhook.
+
+> No docs provided. (Pretty self explanatory duh.)
+### `method` send_message(message)
+### `method` send_embedded_message(message)
+### `method` edit_message(message_id)
+### `method` delete_message(message_id)
