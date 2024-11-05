@@ -13,7 +13,7 @@ Discord's API Wrapper.
 __title__ ='Esycord Discord API Plugin'
 __author__ ='Aayush Srivastava'
 __contact__ = 'https://discord.com/users/795873954668871731'
-__version__ ='1.4'
+__version__ ='1.3'
 __lisence__ ='MIT Lisence'
 __repository__ = 'https://github.com/Aayush-Srivastava2410/esycord'
 __issues__ ='https://github.com/Aayush-Srivastava2410/esycord/issues'
