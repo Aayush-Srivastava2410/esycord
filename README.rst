@@ -4,7 +4,7 @@ esycord
 .. image:: https://discord.com/api/guilds/336642139381301249/embed.png
    :target: https://discord.com/users/795873954668871731
    :alt: Discord User
-.. image:: https://img.shields.io/pypi/v/discord.py.svg
+.. image:: https://img.shields.io/pypi/v/esycord.svg
    :target: https://pypi.python.org/pypi/esycord
    :alt: PyPI version info
 .. image:: https://img.shields.io/pypi/pyversions/esycord.svg
@@ -54,7 +54,7 @@ Bot Example
 Links
 ------
 
-- `Documentation <https://github.com/Aayush-Srivastava2410/esycord/wiki>`
+- `Documentation <https://github.com/Aayush-Srivastava2410/esycord/wiki>`_
 - `Discord User <https://discord.gg/users/795873954668871731>`_
 
 Future
