@@ -7,7 +7,7 @@ esycord
 .. image:: https://img.shields.io/pypi/v/discord.py.svg
    :target: https://pypi.python.org/pypi/esycord
    :alt: PyPI version info
-.. image:: https://img.shields.io/pypi/pyversions/discord.py.svg
+.. image:: https://img.shields.io/pypi/pyversions/esycord.svg
    :target: https://pypi.python.org/pypi/esycord
    :alt: PyPI supported Python versions
 
