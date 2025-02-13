@@ -10,14 +10,20 @@ Discord's API Wrapper.
 :license: MIT
 """
 
-__title__ ='Esycord Discord API Plugin'
+__title__ ='esycord Discord API Plugin'
 __author__ ='Aayush Srivastava'
 __contact__ = 'https://discord.com/users/795873954668871731'
-__version__ ='1.3'
+__version__ ='1.5'
 __lisence__ ='MIT Lisence'
 __repository__ = 'https://github.com/Aayush-Srivastava2410/esycord'
 __issues__ ='https://github.com/Aayush-Srivastava2410/esycord/issues'
-
+__all__=(
+    'discord',
+    'Bot',
+    'Data',
+    'Webhook',
+    'Voice'
+)
 
 
 __path__ = __import__('pkgutil').extend_path(__path__, __name__)
@@ -27,9 +33,7 @@ from .__main__ import (
     Voice,
     Data,
     discord,
-    commands,
-    requests,
-    Optional,
+    Webhook
 )
 
 

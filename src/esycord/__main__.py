@@ -21,41 +21,67 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from deprecated import deprecated
 from discord.ext import commands
-from discord import FFmpegPCMAudio
 import requests
 from discord import Intents
 import discord
-from typing import Optional
 import colorama
 import sqlite3 as sql
 from __internals import _dataInternal, _wbInternal, _btInternal
-
-## Hello Beautiful human :D
-## This code kinda tres
-## Help me by making it better :D
-## I- i lov u :))
-
 
 
 colorama.init(autoreset=True)
 colorama.just_fix_windows_console()
 
 Interaction=discord.Interaction
+Connectable=discord.abc.Connectable
+Messageable=discord.abc.Messageable
 
-class Bot(discord.ext.commands.Bot, _btInternal):   
+
+
+class Bot:   
     '''
     `Class` Bot
     ----------------------------------------------------------------
     Represents your discord bot and the functions available.
     '''
-    def __init__(self, command_prefix:str='.', intents:discord.Intents=Intents.default()):
-        self.command_prefix = command_prefix
+    __all__=(
+        'command_prefix',
+        'bot',
+        'dm_user',
+        'set_bot_presence',
+        'run',
+        'app_command',
+        'apc_param',
+        'event',
+        'command'
+        '__init__'
+    )
+    @property
+    def command_prefix(self):
+        return self._command_prefix
+    
+    @property
+    def bot(self):
+        '''Represents the bot client'''
+        return self._bot
+    
+
+    @command_prefix.setter
+    def set_cp(self, command_pf):
+        self._command_prefix = command_pf
+    @bot.setter
+    def set_bot(self, boat):
+        self._bot = boat
+
+    
+    def __init__(self, command_prefix:str, intents:Intents=Intents.default()):
+        self._command_prefix = command_prefix
+        self._bot = commands.Bot(command_prefix=command_prefix, intents=intents)
         self.intents = intents
-        self.bot = commands.Bot(command_prefix=command_prefix, intents=intents)
+
     
-    
+
     async def dm_user(self, user: discord.User, user_id:discord.User.id, message: str):  # type: ignore
         """Sends a direct message to a user.
         ----------------------------------------------------------------
@@ -101,7 +127,7 @@ class Bot(discord.ext.commands.Bot, _btInternal):
         except Exception as e:
             _btInternal.error('Error changing Bot Presence! Error:{0}'.format(e))
 
-    def run(self, token:str)->None:
+    def run(self, token:str, *args)->None:
         '''
         Runs the bot with the provided token.
         ----------------------------------------------------------------
@@ -109,32 +135,40 @@ class Bot(discord.ext.commands.Bot, _btInternal):
         token: `str`
             The token for your bot.'''
         try:
-            _btInternal.status('Starting bot handshake...')
-            self.bot.run(token=token)
+            _btInternal.status('Verifying credentials and logging in...')
+            @self.event()
+            async def on_ready():
+                _btInternal.success('Logged in to discord as {0}'.format(self.bot.user.name))
+                print(self.bot.extensions)
+                bot = self.bot
+                await self.bot.tree.sync()
+            self.bot.run(token=token, *args)
         except Exception as e:
-            _btInternal.error('Error starting bot handshake! Error:{0}'.format(e))
+            _btInternal.error("An error occoured while initialisation: {0}".format(e))
             exit(code=404)
-        _btInternal.success('Logged in to discord as {0}'.format(self.client.user.name))
-        
-    @property
-    def client(self):
-        '''Represents the bot client'''
-        return self.bot
+            
 
-    def app_command(self, name: str, description: str):
+    def app_command(self, name: str, description: str, *args):
         '''Returns a decorator for an app command.
         ----------------------------------------------------------------
+
+
         .. Attributes::
+
         name : `str`
             Name of the command.
+
+        
         description : `str`
             Description of the command.
+
+        
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         bot = Bot()
         @bot.app_command(name="Ping", description="Replies with Pong!")
         async def ping(interaction: esycord.discord.Interaction):
             await interaction.response.send_message("Pong!")'''
-        return self.bot.tree.command(name=name, description=description)
+        return self.bot.tree.command(name=name, description=description, *args)
 
     def apc_param(self, *args):
         '''Returns a decorator acting as a app command parameter.
@@ -161,14 +195,7 @@ class Bot(discord.ext.commands.Bot, _btInternal):
         '''
         return self.bot.command(pass_context=pass_context)
 
-    @property
-    def user(self):
-        '''Represents connected client.
-        '''
-        id= self.bot.user.id
-        return self.bot.user
-
-class Data(sql):
+class Data:
     '''
     Data Handling Module.
     ----------------------------------------------------------------
@@ -182,31 +209,52 @@ class Data(sql):
     data = Data
     data.setUserVar(ctx.user, 'money', 1000)
     '''
-    def __main__(self, custom_db='database.db'):
-        self.db = custom_db
-        try:
-            self.con = sql.connect(self.db)
-        except sql.DatabaseError:
-            _dataInternal.error("Could not connect to database {0}.".format(self.db))
-            _dataInternal.status("Attempting to connect to database.db...")
-            self.con = sql.connect('database.db')
-        self.cur = self.con.cursor()
-        self.cur.execute("CREATE TABLE IF NOT EXISTS user(id INTEGER, var STRING  , value)")
-        self.cur.execute("CREATE TABLE IF NOT EXISTS guild(id INTEGER , var STRING , value)")
-        self.cur.execute("CREATE TABLE IF NOT EXISTS channel(id INTEGER , var STRING , value)")
+
+    __all__ = (
+        'getUserVar',
+        'setUserVar',
+        'getChannelVar',
+        'setChannelVar',
+        'getGuildVar',
+        'setGuildVar',
+        'guildLeaderboard',
+        'userLeaderboard',
+        'channelLeaderboard',
+    )
 
     @property
-    def _databaseCursor(self)->sql.Cursor:
+    def cur(self)->sql.Cursor:
         '''For people who have experience with sqlite3:  
 
         This returns the connection cursor.'''
-        return self.cur
+        return self._cur
     @property
-    def _databaseConnection(self)->sql.Connection:
+    def con(self)->sql.Connection:
         '''For people who have experience with sqlite3:  
 
         This returns the connection with the database.'''
-        return self.con
+        return self._con
+    
+    @con.setter
+    def setcon(self, con):
+        self._con = con
+    @cur.setter
+    def setcur(self, cur):
+        self._cur = cur
+    
+    def __init__(self, custom_db:str='database.db'):
+        self.db = custom_db
+        try:
+            self._con = sql.connect(self.db)
+        except sql.DatabaseError:
+            _dataInternal.error("Could not connect to database {0}.".format(self.db))
+            _dataInternal.status("Attempting to connect to database.db...")
+            self._con = sql.connect('database.db')
+        self._cur = self._con.cursor()
+        self._cur.execute("CREATE TABLE IF NOT EXISTS user(id INTEGER, var STRING  , value)")
+        self._cur.execute("CREATE TABLE IF NOT EXISTS guild(id INTEGER , var STRING , value)")
+        self._cur.execute("CREATE TABLE IF NOT EXISTS channel(id INTEGER , var STRING , value)")
+
     
     @property
     def _userVars(self)->list:
@@ -217,7 +265,7 @@ class Data(sql):
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         >>> [(var1, ), (var2, ), (var3, )]
         '''
-        return self.cur.execute('SELECT var FROM user').fetchall()
+        return self._cur.execute('SELECT var FROM user').fetchall()
     
     @property
     def _channelVars(self)->list:
@@ -228,7 +276,7 @@ class Data(sql):
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         >>> [(var1, ), (var2, ), (var3, )]
         '''
-        return self.cur.execute('SELECT var FROM channel').fetchall()
+        return self._cur.execute('SELECT var FROM channel').fetchall()
     @property
     def _guildVars(self)->list:
         '''
@@ -238,10 +286,10 @@ class Data(sql):
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         >>> [(var1, ), (var2, ), (var3, )]
         '''
-        return self.cur.execute('SELECT var FROM guild').fetchall()
+        return self._cur.execute('SELECT var FROM guild').fetchall()
     
 
-    def getUserVar(self, user:discord.User, variable:str, defaultValue:any=None)-> None|any:
+    def getUserVar(self, user:discord.User, variable:str, defaultValue:any=None)-> None:
         '''
         Gets a variable value for a specefic user.  
         ----------------------------------------------------------------
@@ -264,19 +312,19 @@ class Data(sql):
                 await ctx.send(f'You have {x} Money')
         
         '''
-        alpha=self.cur.execute("SELECT value FROM user WHERE var='{1}' AND id={0}".format(user.id))
+        alpha=self._cur.execute("SELECT value FROM user WHERE var='{1}' AND id={0}".format(user.id))
         try:
             if alpha.fetchall()[0][0] is None:
-                self.cur.execute("INSERT INTO user VALUES ({0}, '{1}', {2})".format(user.id, variable, defaultValue)) 
+                self._cur.execute("INSERT INTO user VALUES ({0}, '{1}', {2})".format(user.id, variable, defaultValue)) 
                 return defaultValue
             else: return alpha.fetchall()[0][0]
         except Exception:
             if Exception is IndexError:
-                self.cur.execute("INSERT INTO user VALUES ({0}, '{1}', {2})".format(user.id, variable, defaultValue)) 
+                self._cur.execute("INSERT INTO user VALUES ({0}, '{1}', {2})".format(user.id, variable, defaultValue)) 
                 return defaultValue
             else:
                 _dataInternal.error("Error occurred while fetching user data: {0}".format(Exception))
-        self.con.commit()
+        self._con.commit()
 
     def setUserVar(self, user : discord.User, variable: str, value)->None:
         '''Sets a variable value for a specefic user.
@@ -300,13 +348,13 @@ class Data(sql):
                 setUserVar(user = ctx.user, variable = 'money', value = 1000)
         ```
         '''
-        if self.cur.execute("SELECT id FROM user WHERE var ='{0}' AND value={1}".format(variable, value)).fetchall is None:
-            self.cur.execute("INSERT INTO user VALUES ({0}, '{1}', {2})".format(user.id, variable, value))
+        if self._cur.execute("SELECT id FROM user WHERE var ='{0}' AND value={1}".format(variable, value)).fetchall is None:
+            self._cur.execute("INSERT INTO user VALUES ({0}, '{1}', {2})".format(user.id, variable, value))
         else:
-            self.cur.execute("UPDATE user SET value={0} WHERE var='{1}' AND id = {2}".format(value, variable, user.id))
-        self.con.commit()
+            self._cur.execute("UPDATE user SET value={0} WHERE var='{1}' AND id = {2}".format(value, variable, user.id))
+        self._con.commit()
 
-    def getChannelVar(self, channel:discord.TextChannel, variable:str, defaultValue:any=None)->None|any:
+    def getChannelVar(self, channel:discord.TextChannel, variable:str, defaultValue:any=None)->None:
         '''Gets a variable value for a specefic Channel.
         ----------------------------------------------------------------
         .. Attributes ::
@@ -327,19 +375,19 @@ class Data(sql):
                 await ctx.send(f'This channel has {x} votes')
         ```
         '''
-        alpha=self.cur.execute("SELECT value FROM channel WHERE var='{1}' AND id={0}".format(channel.id))
+        alpha=self._cur.execute("SELECT value FROM channel WHERE var='{1}' AND id={0}".format(channel.id))
         try:
             if alpha.fetchall()[0][0] is None:
-                self.cur.execute("INSERT INTO channel VALUES ({0}, '{1}', {2})".format(channel.id, variable, defaultValue)) 
+                self._cur.execute("INSERT INTO channel VALUES ({0}, '{1}', {2})".format(channel.id, variable, defaultValue)) 
                 return defaultValue
             else: return alpha.fetchall()[0][0]
         except Exception:
             if Exception is IndexError:
-                self.cur.execute("INSERT INTO channel VALUES ({0}, '{1}', {2})".format(channel.id, variable, defaultValue)) 
+                self._cur.execute("INSERT INTO channel VALUES ({0}, '{1}', {2})".format(channel.id, variable, defaultValue)) 
                 return defaultValue
             else:
                 _dataInternal.error("Error occurred while fetching user data: {0}".format(Exception))
-        self.con.commit()
+        self._con.commit()
 
     def setChannelVar(self , channel:discord.TextChannel, variable: str, value:any)->None:
         '''Gets a variable value for a specefic Channel.
@@ -361,13 +409,13 @@ class Data(sql):
             setChannelVar(Channel = ctx.channel, variable = 'votes', value = 0)
         ```
         '''
-        if self.cur.execute("SELECT id FROM channel WHERE var ='{0}' AND value={1}".format(variable, value)).fetchall is None:
-            self.cur.execute("INSERT INTO channel VALUES ({0}, '{1}', {2})".format(channel.id, variable, value))
+        if self._cur.execute("SELECT id FROM channel WHERE var ='{0}' AND value={1}".format(variable, value)).fetchall is None:
+            self._cur.execute("INSERT INTO channel VALUES ({0}, '{1}', {2})".format(channel.id, variable, value))
         else:
-            self.cur.execute("UPDATE channel SET value={0} WHERE var='{1}' AND id = {2}".format(value, variable, channel.id))
-        self.con.commit()
+            self._cur.execute("UPDATE channel SET value={0} WHERE var='{1}' AND id = {2}".format(value, variable, channel.id))
+        self._con.commit()
 
-    def getGuildVar(self, Guild:discord.Guild, variable:str, defaultValue:any=None)-> None|any:
+    def getGuildVar(self, Guild:discord.Guild, variable:str, defaultValue:any=None)-> None:
         '''
         Gets a variable value for a specefic Guild.  
         ----------------------------------------------------------------
@@ -390,19 +438,19 @@ class Data(sql):
                 await ctx.send(f'You have {x} Money')
         
         '''
-        alpha=self.cur.execute("SELECT value FROM guild WHERE var='{1}' AND id={0}".format(Guild.id))
+        alpha=self._cur.execute("SELECT value FROM guild WHERE var='{1}' AND id={0}".format(Guild.id))
         try:
             if alpha.fetchall()[0][0] is None:
-                self.cur.execute("INSERT INTO guild VALUES ({0}, '{1}', {2})".format(Guild.id, variable, defaultValue)) 
+                self._cur.execute("INSERT INTO guild VALUES ({0}, '{1}', {2})".format(Guild.id, variable, defaultValue)) 
                 return defaultValue
             else: return alpha.fetchall()[0][0]
         except Exception:
             if Exception is IndexError:
-                self.cur.execute("INSERT INTO guild VALUES ({0}, '{1}', {2})".format(Guild.id, variable, defaultValue)) 
+                self._cur.execute("INSERT INTO guild VALUES ({0}, '{1}', {2})".format(Guild.id, variable, defaultValue)) 
                 return defaultValue
             else:
                 _dataInternal.error("Error occurred while fetching Guild data: {0}".format(Exception))
-        self.con.commit()
+        self._con.commit()
 
     def setGuildVar(self, Guild : discord.Guild, variable: str, value)->None:
         '''Sets a variable value for a specefic Guild.
@@ -424,11 +472,11 @@ class Data(sql):
             async def setGuild(ctx):
                 setGuildVar(Guild = ctx.Guild, variable = 'money', value = 1000)
         '''
-        if self.cur.execute("SELECT id FROM guild WHERE var ='{0}' AND value={1}".format(variable, value)).fetchall is None:
-            self.cur.execute("INSERT INTO guild VALUES ({0}, '{1}', {2})".format(Guild.id, variable, value))
+        if self._cur.execute("SELECT id FROM guild WHERE var ='{0}' AND value={1}".format(variable, value)).fetchall is None:
+            self._cur.execute("INSERT INTO guild VALUES ({0}, '{1}', {2})".format(Guild.id, variable, value))
         else:
-            self.cur.execute("UPDATE guild SET value={0} WHERE var='{1}' AND id = {2}".format(value, variable, Guild.id))
-        self.con.commit()
+            self._cur.execute("UPDATE guild SET value={0} WHERE var='{1}' AND id = {2}".format(value, variable, Guild.id))
+        self._con.commit()
 
     def guildLeaderboard(self, variable:str, top:int=10)->list|Warning:
         '''
@@ -445,7 +493,7 @@ class Data(sql):
         if top <=0:
             _dataInternal.error('Invalid index for top in guild leaderboard.')
         try:
-            alpha = self.cur.execute("SELECT id FROM guild WHERE var ={0} ORDER BY value".format(variable)).fetchmany(size=top)
+            alpha = self._cur.execute("SELECT id FROM guild WHERE var ={0} ORDER BY value".format(variable)).fetchmany(size=top)
             beta = list()
             for i in range(len(alpha)):
                 beta.append(alpha[i][0])
@@ -468,7 +516,7 @@ class Data(sql):
         if top <=0:
             _dataInternal.error('Invalid index for top in user leaderboard.')
         try:
-            alpha = self.cur.execute("SELECT id FROM user WHERE var ='{0}' ORDER BY value".format(variable)).fetchmany(size=top)
+            alpha = self._cur.execute("SELECT id FROM user WHERE var ='{0}' ORDER BY value".format(variable)).fetchmany(size=top)
             beta = list()
             for i in range(len(alpha)):
                 beta.append(alpha[i][0])
@@ -491,7 +539,7 @@ class Data(sql):
         if top <=0:
             _dataInternal.error('Invalid index for top in channel leaderboard.')
         try:
-            alpha = self.cur.execute("SELECT id FROM channel WHERE var ='{0}' ORDER BY value".format(variable)).fetchmany(size=top)
+            alpha = self._cur.execute("SELECT id FROM channel WHERE var ='{0}' ORDER BY value".format(variable)).fetchmany(size=top)
             beta = list()
             for i in range(len(alpha)):
                 beta.append(alpha[i][0])
@@ -506,19 +554,17 @@ class Voice:
     Voice functions for your discord bot.  
 
 
-    Attributes  
+    Attributes   
     client: `class` esycord.Bot()
         Bot instance.
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORTANT:
-    > FFMPEG requires to be configured on your environment variables.  
+    > FFMPEG requires to be configured on your environment variables or must be present in local directory.  
 
     > A (`Class` Bot) instance is required to be hosted.'''
-    def __init__(self, client:Bot):
-        self.client = client.client()
     
 
-    async def join(self,channel:discord.abc.Connectable):
+    async def join(self,channel:Connectable):
         '''Joins a voice channel.
         ----------------------------------------------------------------
         Attributes
@@ -540,7 +586,7 @@ class Voice:
             _btInternal.error('Not connected to VC in guild {0.id}'.format(guild))
     
 
-    async def play(self, source: str, channel: discord.abc.Connectable):
+    async def play(self, source: str, channel: Connectable):
         '''Plays audio from a source.
         ----------------------------------------------------------------
         Attributes
@@ -554,7 +600,7 @@ class Voice:
         voice_client = await channel.connect(reconnect=True)
         voice_client.play(discord.FFmpegPCMAudio(source))
 
-    async def pause(self, channel:discord.abc.Connectable):
+    async def pause(self, channel:Connectable):
         '''Pauses the current audio.
         ----------------------------------------------------------------
         Attributes
@@ -567,7 +613,7 @@ class Voice:
         else:
             raise discord.ClientException('Not playing audio in the given voice channel.')
 
-    async def resume(self, channel: discord.abc.Connectable):
+    async def resume(self, channel: Connectable):
         '''Resumes the paused audio.
         ----------------------------------------------------------------
         Attributes
@@ -580,7 +626,7 @@ class Voice:
         else:
             raise discord.ClientException('Not paused audio in the given voice channel.')
 
-    async def stop(self, channel: discord.abc.Connectable):
+    async def stop(self, channel: Connectable):
         '''Stops the current audio.
         ----------------------------------------------------------------
         Attributes
@@ -594,7 +640,7 @@ class Voice:
             raise discord.ClientException('Not playing audio in the given voice channel.')
 
 
-class Webhook(_wbInternal, requests):
+class Webhook:
     '''`Class` Webhook
     ----------------------------------------------------------------
     Webhook functions'''
@@ -652,3 +698,4 @@ class Webhook(_wbInternal, requests):
         req=requests.delete(f"{self.webhook_url}/messages/{message_id}", headers=self.headers)
         if req.status_code == 204:_wbInternal.success("[{0}] Message deleted successfully.".format(req.status_code))
         else: _wbInternal.warn('[{0}] Error deleting message!'.format(req.status_code))
+

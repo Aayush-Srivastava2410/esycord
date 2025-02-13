@@ -31,47 +31,59 @@ colorama.just_fix_windows_console()
 class _btInternal:
     def error(msg):
         print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Bot :", end=' ')
-        print(colorama.Style.BRIGHT + colorama.Fore.RED + f'[ERROR]: {msg}' )
+        print(colorama.Style.BRIGHT + colorama.Fore.RED + f'[ERROR]:  ', end=' ' )
+        print(msg)
 
     def warn(msg):
         print( colorama.Style.BRIGHT + colorama.Fore.BLUE+"esycord.Bot :", end=' ')
-        print( colorama.Style.BRIGHT + colorama.Fore.YELLOW + f'[WARNING]: {msg}' )
+        print( colorama.Style.BRIGHT + colorama.Fore.YELLOW + f'[WARNING]: ', end=' ' )
+        print(msg)
 
     def success(msg):
         print( colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Bot :", end=' ' )
-        print( colorama.Style.BRIGHT + colorama.Fore.GREEN + f'[SUCCESS]: {msg}' )
+        print( colorama.Style.BRIGHT + colorama.Fore.GREEN + f'[SUCCESS]:  ', end=' ' )
+        print(msg)
     def status(msg):
         print( colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Bot :", end=' ' )
-        print( colorama.Style.BRIGHT + colorama.Fore.CYAN + f'[STATUS]: {msg}' )
+        print( colorama.Style.BRIGHT + colorama.Fore.CYAN + f'[STATUS]: ', end=' ' )
+        print(msg)
 
 class _dataInternal:
     def error(msg):
-        print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Data :", end=' ')
-        print(colorama.Style.BRIGHT + colorama.Fore.RED + f'[ERROR]: {msg}' )
+        print(colorama.Style.BRIGHT + colorama.Fore.WHITE + "esycord.Data :", end=' ')
+        print(colorama.Style.BRIGHT + colorama.Fore.RED + f'[ERROR]:  ', end=' ' )
+        print(msg)
 
     def warn(msg):
-        print( colorama.Style.BRIGHT + colorama.Fore.BLUE+"esycord.Data :", end=' ')
-        print( colorama.Style.BRIGHT + colorama.Fore.YELLOW + f'[WARNING]: {msg}' )
+        print( colorama.Style.BRIGHT + colorama.Fore.WHITE+"esycord.Data :", end=' ')
+        print( colorama.Style.BRIGHT + colorama.Fore.YELLOW + f'[WARNING]: ', end=' ' )
+        print(msg)
 
     def success(msg):
-        print( colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Data :", end=' ' )
-        print( colorama.Style.BRIGHT + colorama.Fore.GREEN + f'[SUCCESS]: {msg}' )
+        print( colorama.Style.BRIGHT + colorama.Fore.WHITE + "esycord.Data :", end=' ' )
+        print( colorama.Style.BRIGHT + colorama.Fore.GREEN + f'[SUCCESS]:  ', end=' ' )
+        print(msg)
     def status(msg):
-        print( colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Data :", end=' ' )
-        print( colorama.Style.BRIGHT + colorama.Fore.CYAN + f'[STATUS]: {msg}' )
+        print( colorama.Style.BRIGHT + colorama.Fore.WHITE + "esycord.Data :", end=' ' )
+        print( colorama.Style.BRIGHT + colorama.Fore.CYAN + f'[STATUS]: ', end=' ' )
+        print(msg)
 
 class _wbInternal:
     def error(msg):
-        print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Webhook :", end=' ')
-        print(colorama.Style.BRIGHT + colorama.Fore.RED + f'[ERROR]: {msg}' )
+        print(colorama.Style.BRIGHT + colorama.Fore.YELLOW + "esycord.Webhook :", end=' ')
+        print(colorama.Style.BRIGHT + colorama.Fore.RED + f'[ERROR]:  ', end=' ' )
+        print(msg)
 
     def warn(msg):
-        print( colorama.Style.BRIGHT + colorama.Fore.BLUE+"esycord.Webhook :", end=' ')
-        print( colorama.Style.BRIGHT + colorama.Fore.YELLOW + f'[WARNING]: {msg}' )
+        print( colorama.Style.BRIGHT + colorama.Fore.YELLOW+"esycord.Webhook :", end=' ')
+        print( colorama.Style.BRIGHT + colorama.Fore.YELLOW + f'[WARNING]: ', end=' ' )
+        print(msg)
 
     def success(msg):
-        print( colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Webhook :", end=' ' )
-        print( colorama.Style.BRIGHT + colorama.Fore.GREEN + f'[SUCCESS]: {msg}' )
+        print( colorama.Style.BRIGHT + colorama.Fore.YELLOW + "esycord.Webhook :", end=' ' )
+        print( colorama.Style.BRIGHT + colorama.Fore.GREEN + f'[SUCCESS]:  ', end=' ' )
+        print(msg)
     def status(msg):
-        print( colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Webhook :", end=' ' )
-        print( colorama.Style.BRIGHT + colorama.Fore.CYAN + f'[STATUS]: {msg}' )
+        print( colorama.Style.BRIGHT + colorama.Fore.YELLOW + "esycord.Webhook :", end=' ' )
+        print( colorama.Style.BRIGHT + colorama.Fore.CYAN + f'[STATUS]: ', end=' ' )
+        print(msg)
