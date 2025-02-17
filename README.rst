@@ -56,8 +56,6 @@ Links
 
 - `Documentation <https://github.com/Aayush-Srivastava2410/esycord/wiki>`_
 - `Discord User <https://discord.gg/users/795873954668871731>`_
+- `Repository <https://github.com/Aayush-Srivastava2410/esycord>`_
 
-Future
--------
-- Automod
-- Full Voice Support
+*Latest version :: 1.6*
