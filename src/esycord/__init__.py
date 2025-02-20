@@ -1,10 +1,10 @@
 """
 Esycord Discord API Plugin
 ==================================
-This is a very beginner friendly package
-for all those who wanna make a Discord
+A very beginner friendly package
+for all those who want to make a Discord
 bot but dont have much experience with
-Discord's API Wrapper.
+Discord's API Wrapper (discord.py).
 
 :copyright: (c) 2024 Aayush Srivastava
 :license: MIT
@@ -15,7 +15,7 @@ Discord's API Wrapper.
 __title__ ='esycord Discord API Plugin'
 __author__ ='Aayush Srivastava'
 __contact__ = 'https://discord.com/users/795873954668871731'
-__version__ ='1.6.0'
+__version__ ='1.6.1'
 __lisence__ ='MIT Lisence'
 __repository__ = 'https://github.com/Aayush-Srivastava2410/esycord'
 __issues__ ='https://github.com/Aayush-Srivastava2410/esycord/issues'
@@ -30,14 +30,13 @@ __all__=(
     'discord',
     'Interaction',
     'Connectable',
-    'Messageable',
     'Embed'
 )
 
 
 __path__ = __import__('pkgutil').extend_path(__path__, __name__)
 
-from .__main__ import (
+from .esycord import (
     Bot, 
     Data,
     discord,
@@ -46,7 +45,6 @@ from .__main__ import (
     discord,
     Interaction,
     Connectable,
-    Messageable,
     Embed
 )
 
@@ -62,7 +60,7 @@ class VersionInfo(NamedTuple):
     releaselevel: Literal["alpha", "beta", "candidate", "final"]
 
 
-version_info: VersionInfo = VersionInfo(major=1, minor=6, micro=0,  releaselevel='final')
+version_info: VersionInfo = VersionInfo(major=1, minor=6, micro=1,  releaselevel='final')
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 

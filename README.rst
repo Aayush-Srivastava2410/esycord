@@ -19,7 +19,7 @@ Installing
 
 **Python 3.11 or higher is required**
 
-
+- Via pip
 .. code:: sh
 
     # Linux/macOS
@@ -28,15 +28,27 @@ Installing
     # Windows
     py -3 -m pip install -U esycord
 
+
+- Manual install
+.. code:: sh
+
+    # git/Github Desktop is needed
+
+    git clone https://github.com/Aayush-Srivastava2410/esycord.git
+    cd esycord
+    pip install -r requirements.txt
+    pip install -e .
+
+
+
 Bot Example
 ----------------
 
 .. code:: py
 
     import esycord
-    from esycord import discord
 
-    intents = discord.Intents.default()
+    intents = esycord.Intents.default()
     intents.message_content = True
 
     bot = esycord.Bot('!', intents=intents)
@@ -48,6 +60,7 @@ Bot Example
     async def on_message(message):
     if message == 'ping':
         await message.channel.send('pong')
+    
     bot.run('token')
 
 
@@ -58,4 +71,4 @@ Links
 - `Discord User <https://discord.gg/users/795873954668871731>`_
 - `Repository <https://github.com/Aayush-Srivastava2410/esycord>`_
 
-*Latest version :: 1.6*
+*Latest version :: 1.6.1*

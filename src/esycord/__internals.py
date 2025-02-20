@@ -98,6 +98,31 @@ class _wbInternal:
         print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Webhook :", end=' ')
         print(colorama.Style.BRIGHT+msg)
 
+class _vcInternal:
+    def error(msg):
+        print(colorama.Style.DIM + colorama.Fore.LIGHTBLACK_EX+ time.strftime("%Y-%m-%d %H:%m:%S"), end=' ')
+        print(colorama.Style.BRIGHT + colorama.Fore.RED + f'ERROR    :', end='     ' )
+        print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Voice :", end=' ')
+        print(colorama.Style.BRIGHT+msg)
+
+    def warn(msg):
+        print(colorama.Style.DIM + colorama.Fore.LIGHTBLACK_EX+ time.strftime("%Y-%m-%d %H:%m:%S"), end=' ')
+        print(colorama.Style.BRIGHT + colorama.Fore.YELLOW + f'WARNING  :', end='     ' )
+        print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Voice :", end=' ')
+        print(colorama.Style.BRIGHT+msg)
+    def success(msg):
+        print(colorama.Style.DIM + colorama.Fore.LIGHTBLACK_EX+ time.strftime("%Y-%m-%d %H:%m:%S"), end=' ')
+        print(colorama.Style.BRIGHT + colorama.Fore.GREEN + f'SUCCESS  :', end='     ' )
+        print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Voice :", end=' ')
+        print(colorama.Style.BRIGHT+msg)
+    def status(msg):
+        print(colorama.Style.DIM + colorama.Fore.LIGHTBLACK_EX+ time.strftime("%Y-%m-%d %H:%m:%S"), end=' ')
+        print(colorama.Style.BRIGHT + colorama.Fore.CYAN + f'INFO     :', end='     ' )
+        print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Voice :", end=' ')
+        print(colorama.Style.BRIGHT+msg)
+
+
+
 '''
 _btInternal.error('Error')
 _btInternal.success('Success')
