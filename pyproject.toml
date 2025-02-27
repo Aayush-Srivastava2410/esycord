@@ -6,27 +6,7 @@ build-backend = "hatchling.build"
 name = "esycord"
 version = "1.6.1"
 
-dependencies = [
-  "aiohttp",
-  "aiosignal",
-  "attrs",
-  "certifi",
-  "cffi",
-  "charset-normalizer",
-  "colorama",
-  "discord",
-  "discord.py",
-  "esycord",
-  "frozenlist",
-  "idna",
-  "multidict",
-  "propcache",
-  "pycparser",
-  "PyNaCl",
-  "requests",
-  "urllib3",
-  "yarl"
-]
+dependencies = ["discord", "aiohttp>=3.9.5","pynacl>=1.5.0", "colorama","requests"]
 requires-python = ">=3.9"
 
 authors =[
@@ -48,7 +28,7 @@ classifiers = [
 ]
 
 description = "The most beginner friendly discord package"
-readme = {file = "README.rst", content-type = "text/x-rst"}
+readme ="README.rst"
 
 keywords = ["discord", "beginner discord", "easycord", "discord simple", 'esycord', 'Discord bot maker',"ezycord"]
 

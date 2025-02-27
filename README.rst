@@ -19,7 +19,8 @@ Installing
 
 **Python 3.11 or higher is required**
 
-- Via pip
+1. pip Installation  
+
 .. code:: sh
 
     # Linux/macOS
@@ -29,7 +30,8 @@ Installing
     py -3 -m pip install -U esycord
 
 
-- Manual install
+2. Manual Installation  
+
 .. code:: sh
 
     # git/Github Desktop is needed

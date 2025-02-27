@@ -159,7 +159,7 @@ class Bot:
                 _btInternal.success('Logged in to discord as {0}'.format(self.bot.user.name))    
                 await self.tree.sync()
                         
-            self.bot.run(token=token, *args)
+            self.bot.run(token=token, log_handler=None, *args)
 
         except Exception as e:
             _btInternal.error("An error occoured while initialisation: {0}".format(e))
@@ -240,25 +240,25 @@ class Bot:
 
         .. code-block:: py
 
-            member = discord.utils.get(message.guild.members, name='Foo')
+            member = Bot.get(message.guild.members, name='Foo')
 
         Multiple attribute matching:
 
         .. code-block:: py
 
-            channel = discord.utils.get(guild.voice_channels, name='Foo', bitrate=64000)
+            channel = Bot.get(guild.voice_channels, name='Foo', bitrate=64000)
 
         Nested attribute matching:
 
         .. code-block:: py
 
-            channel = discord.utils.get(client.get_all_channels(), guild__name='Cool', name='general')
+            channel = Bot.get(client.get_all_channels(), guild__name='Cool', name='general')
 
         Async iterables:
 
         .. code-block:: py
 
-            msg = await discord.utils.get(channel.history(), author__name='Dave')
+            msg = await Bot.get(channel.history(), author__name='Dave')
 
         Parameters
         -----------
@@ -268,7 +268,7 @@ class Bot:
         \*\*attrs
             Keyword arguments that denote attributes to search with.
         """
-        return discord.utils.get(iterable=iterable, **attrs)
+        return Bot.get(iterable=iterable, **attrs)
 
 class Data:
     '''
@@ -692,8 +692,18 @@ class Voice:
         
         channel: :class:`esycord.Connectable`
             The channel to connect to.'''
-        voice_protocol = discord.VoiceProtocol(client=self._bot, channel=channel)
-        return await voice_protocol.connect(timeout=5, reconnect=False)
+        try:
+            voice_protocol = discord.VoiceProtocol(client=self._bot, channel=channel)
+            await voice_protocol.connect(timeout=5, reconnect=False)
+            if not self.quiet:
+                _vcInternal.success(
+                    "Joined voice channel {0.id}".format(
+                        channel
+                    )
+                )
+        except Exception as e:
+            _vcInternal.error(f"Error joining voice channel {e}")
+
 
     async def disconnect(self, guild:discord.Guild):
         '''Disconnects from a voice channel.
@@ -702,12 +712,17 @@ class Voice:
         
         channel: :class:`discord.Guild`
             The guild to disconnect from.'''
-        if guild.voice_client:
-            await guild.voice_client.disconnect()
-        else:
-            if not self.quiet:
-                _vcInternal.error('Not connected to VC in guild {0.id}'.format(guild))
-    
+        try:
+            if guild.voice_client:
+                await guild.voice_client.disconnect()
+                guild.voice_client.cleanup()
+            else:
+                if not self.quiet:
+                    _vcInternal.error('Not connected to VC in guild {0.id}'.format(guild))
+        except Exception as e:
+            _vcInternal.error(f"Error disconnecting from voice channel {e}")
+
+
 
     async def play(self, source: str, channel: Connectable):
         '''Plays audio from a source.
@@ -733,7 +748,7 @@ class Voice:
         
         channel: :class:`Connectable`
             The voice channel in which the audio is playing.'''
-        voice_client = discord.utils.get(self.client.voice_clients, guild=channel.guild)
+        voice_client = Bot.get(self._bot.voice_clients, guild=channel.guild)
         if voice_client.is_playing():
             voice_client.pause()
         else:
@@ -747,7 +762,7 @@ class Voice:
         
         channel: :class:`Connectable`
             The voice channel in which the audio is playing.'''
-        voice_client = discord.utils.get(self.client.voice_clients, guild=channel.guild)
+        voice_client = Bot.get(self._bot.voice_clients, guild=channel.guild)
         if voice_client.is_paused():
             voice_client.resume()
         else:
@@ -761,7 +776,7 @@ class Voice:
         
         channel: :class:`Connectable`
             The voice channel in which the audio is playing.'''
-        voice_client = discord.utils.get(self.client.voice_clients, guild=channel.guild)
+        voice_client = Bot.get(self._bot.voice_clients, guild=channel.guild)
         if voice_client.is_playing():
             voice_client.stop()
         else:
@@ -791,10 +806,13 @@ class Webhook:
         2025-02-15 14:02:14 SUCCESS  :     esycord.Webhook : [204] Message sent succesfully.
     '''
     def __init__(self, webhook_url: str):
-        self.webhook_url = webhook_url
-        self.session = requests.Session()
-        try:self.wb=discord.SyncWebhook.from_url(self.webhook_url, self.session)
-        except Exception as e: _wbInternal.error(f"An error occurred: {e}")
+        try:
+            self.webhook_url = webhook_url
+            self.session = requests.Session()
+            self._wb=discord.SyncWebhook.from_url(url=self.webhook_url, session=self.session, bot_token=None)
+        except Exception as e: 
+            _wbInternal.error(f"An error occurred while initialisation: {e}")
+            exit()
 
     def send(self, *args):
         """Sends a message using the webhook.
@@ -877,8 +895,10 @@ class Webhook:
             'applied_tags',
             'poll',
         )
-        x=self.wb.send(*args)
-        _wbInternal.success("Sent message.")
+        try:
+            x=self._wb.send(*args)
+            _wbInternal.success("Sent message.")
+        except Exception as e: _wbInternal.error("Exception: %s" % e)
     def edit_message(self, message:discord.Message|discord.SyncWebhookMessage,*args):
         '''Edits a message.
         ----------------------------------------------------------------
@@ -911,7 +931,7 @@ class Webhook:
         )
         
         try:
-            x=self.wb.edit_message(message_id=message.id, *args)
+            x=self._wb.edit_message(message_id=message.id, *args)
             _wbInternal.success("Edited message.")
             return x
         except Exception as e: _wbInternal.error(f"An error occurred: {e}")
@@ -924,4 +944,4 @@ class Webhook:
         
         message_id: :class:`discord.Message`|:class:`discord.SyncWebhookMessage`
             The message to delete.'''
-        self.wb.delete_message(message_id=message.id)
+        self._wb.delete_message(message_id=message.id)
