@@ -15,7 +15,7 @@ Discord's API Wrapper (discord.py).
 __title__ ='esycord Discord API Plugin'
 __author__ ='Aayush Srivastava'
 __contact__ = 'https://discord.com/users/795873954668871731'
-__version__ ='1.6.1'
+__version__ ='1.6.2'
 __lisence__ ='MIT Lisence'
 __repository__ = 'https://github.com/Aayush-Srivastava2410/esycord'
 __issues__ ='https://github.com/Aayush-Srivastava2410/esycord/issues'
@@ -60,7 +60,7 @@ class VersionInfo(NamedTuple):
     releaselevel: Literal["alpha", "beta", "candidate", "final"]
 
 
-version_info: VersionInfo = VersionInfo(major=1, minor=6, micro=1,  releaselevel='final')
+version_info: VersionInfo = VersionInfo(major=1, minor=6, micro=2,  releaselevel='final')
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 

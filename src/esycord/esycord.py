@@ -31,11 +31,12 @@ import discord
 from discord.ext import commands 
 from discord.abc import Connectable
 import sqlite3 as sql
-from .__internals import (
+from __internals import (
     _dataInternal,
     _wbInternal, 
     _btInternal,
-    _vcInternal
+    _vcInternal,
+    update_checker as update_checker_func
 )
 from typing import (
   Union, 
@@ -53,6 +54,14 @@ class Bot:
     :class:`Bot`
     ----------------------------------------------------------------
     Represents your discord bot and the functions available.
+
+    Attributes
+    --------
+    command_prefix: :class:`str`
+        The command prefix for your bot.
+    
+    intents: :class:`discord.Intents`
+        Intents for your bot.
     '''
     __all__=(
         '__init__',
@@ -100,17 +109,34 @@ class Bot:
     def set_tree(self, t):
         self._tree = t
     
-    def __init__(self, command_prefix:str, intents:Intents=Intents.default()):
+    def __init__(
+        self,
+        command_prefix:str,
+        intents:Intents=Intents.default()
+    ):
+        """
+        Attributes
+        --------
+        command_prefix: :class:`str`
+            The command prefix for your bot.
+    
+        intents: :class:`discord.Intents`
+            Intents for your bot.
+        """
         self._command_prefix = command_prefix
         self._bot = commands.Bot(command_prefix=command_prefix, intents=intents)
         self.intents = intents
         self._tree= self.bot.tree
 
-    async def dm_user(self, user: discord.User, message: str|discord.Embed): 
+    async def dm_user(
+        self,
+        user: discord.User,
+        message: str|discord.Embed
+    ): 
         """Sends a direct message to a user.
-        ----------------------------------------------------------------
-        Attributes
         
+        Attributes
+        -------
         user: :class:`discord.User`
             User to send the message to.
         message: :class:`str`
@@ -121,36 +147,46 @@ class Bot:
         except Exception as e:
             _btInternal.error('Error DMing user! Error:{0}'.format(e))
 
-    async def set_bot_presence(self, state:discord.Status, activity: discord.Activity=None):
+    async def set_bot_presence(
+        self,
+        state:discord.Status,
+        activity: discord.Activity=None
+    ):
         '''Changes the discord Client presence
-        ----------------------------------------------------------------
-        Attributes
 
+        Attributes
+        -------
         state: :class:`discord.Status`
             The current status you the bot to display.
 
         activity :class:`discord.Activity`
             The current activity you the bot to display.
-        
-        -------------------------------------------------------------------
-        Works under an async function with await
         '''
         try:
             await self.bot.change_presence(status=state, activity=activity)
         except Exception as e:
             _btInternal.error('Error changing Bot Presence! Error:{0}'.format(e))
 
-    def run(self, token:str=None , *args)->None:
-        '''
+    def run(
+        self, 
+        token:str=None ,
+        update_checker:bool=True,
+        *args
+    )->None:
+    
+        """
         Runs the bot with the provided token.
-        ----------------------------------------------------------------
 
-        Attributes:
+        Attributes
+        -------
         token: :class:`str`
-            The token for your bot. Will work even if the token is configured on your environment variables as `ESYCORD_TOKEN`.
+            The token for your bot. Will work even if the token 
+            is configured on your environment variables as `ESYCORD_TOKEN`.
         
-        And all other attributes passed to :meth:`discord.Client.run()`
-        '''
+        And all other attributes passed to :meth:`discord.ext.commands.Bot.run()`
+        """
+    
+
         try:
             if token == None: token = os.getenv('ESYCORD_TOKEN')
             _btInternal.status('Verifying credentials and logging in...')
@@ -158,36 +194,51 @@ class Bot:
             async def on_ready():
                 _btInternal.success('Logged in to discord as {0}'.format(self.bot.user.name))    
                 await self.tree.sync()
-                        
+            
+            if update_checker: update_checker_func()
+            if token==None: 
+                _btInternal.error("Token not found!")
+                exit(400)
+
             self.bot.run(token=token, log_handler=None, *args)
 
         except Exception as e:
             _btInternal.error("An error occoured while initialisation: {0}".format(e))
             
 
-    def app_command(self, name: str, description: str, *args):
+    def app_command(
+        self,
+        name: str,
+        description: str,
+        *args
+    ):
         '''Returns a decorator for an app command.
-        ----------------------------------------------------------------
 
-
-        .. Attributes::
-
-        name : :class:`str`
+        Attributes
+        -------
+        name: :class:`str`
             Name of the command.
 
         
-        description : :class:`str`
+        description: :class:`str`
             Description of the command.
 
-        .. code-block:: py
+        
+        Example:
 
+        
+
+        ```
         bot = Bot()
         @bot.app_command(name="Ping", description="Replies with Pong!")
         async def ping(interaction: esycord.discord.Interaction):
             await interaction.response.send_message("Pong!")'''
         return self.tree.command(name=name, description=description, *args)
 
-    def apc_param(self, **parameter:Union[str, str]):
+    def apc_param(
+        self, 
+        **parameter:Union[str, str]
+    ):
         '''Returns a decorator acting as a app command parameter.
 
         ----------------------------------------------------------------
@@ -213,12 +264,18 @@ class Bot:
         '''
         return self.bot.event
 
-    def command(self, pass_context:bool=True):
+    def command(
+        self,
+        pass_context:bool=True
+    ):
         '''Returns a decorator for command handling.
         '''
         return self.bot.command(pass_context=pass_context)
 
-    def get(iterable:Union[Iterable, AsyncIterable], **attrs):
+    def get(
+        iterable:Union[Iterable, AsyncIterable],
+        **attrs
+    ):
         r"""A helper that returns the first element in the iterable that meets
         all the traits passed in ``attrs``. This is an alternative for
         :func:`~discord.utils.find`.
@@ -318,13 +375,23 @@ class Data:
         return self._con
     
     @con.setter
-    def setcon(self, con):
+    def setcon(
+        self,
+        con
+    ):
         self._con = con
     @cur.setter
-    def setcur(self, cur):
+    def setcur(
+        self, 
+        cur
+    ):
         self._cur = cur
     
-    def __init__(self, custom_db:str='database.db'):
+    def __init__(
+        self, 
+        custom_db:str='database.db'
+    ):
+        
         """Initialize the database connection.
         """
         self.db = custom_db
@@ -371,23 +438,27 @@ class Data:
         >>> [(var1, ), (var2, ), (var3, )]
         '''
         return self._cur.execute('SELECT var FROM guild').fetchall()
-    
-
 
     # -----------------------------------------------------------------
     # |                          TABLE                                |
     # -----------------------------------------------------------------
     # |     ID      |        VARIABLE         |         VALUE         |
     # -----------------------------------------------------------------
-    # | 12345678998 |          Mony           |        300            | 
+    # | 12345678998 |          Mony           |          300          | 
     # -----------------------------------------------------------------
 
-    def getUserVar(self, user:discord.User, variable:str, defaultValue:any=None)-> None:
+    def getUserVar(
+        self,
+        user:discord.User,
+        variable:str,
+        defaultValue:any=None
+    )-> None:
+    
         '''
         Gets a variable value for a specefic user.  
-        ----------------------------------------------------------------
-        .. Attributes:
-
+        
+        Attributes
+        -------
         user: :class:`discord.User`
             The user the data should be retrieved.
             
@@ -425,12 +496,17 @@ class Data:
                 _dataInternal.error("Error occurred while fetching user data: {0}".format(Exception))
         self._con.commit()
 
-    def setUserVar(self, user : discord.User, variable: str, value)->None:
+    def setUserVar(
+        self,
+        user : discord.User,
+        variable: str, 
+        value
+    )->None:
         '''Sets a variable value for a specefic user.
 
-        ----------------------------------------------------------------
+        
         Attributes
-
+        -------
         user: :class:`discord.User`
             The user the data should be set.
             
@@ -455,12 +531,17 @@ class Data:
             self._cur.execute("UPDATE user SET value={0} WHERE var='{1}' AND id = {2}".format(value, variable, user.id))
         self._con.commit()
 
-    def getChannelVar(self, channel:discord.TextChannel, variable:str, defaultValue:any=None):
+    def getChannelVar(
+        self,
+        channel:discord.TextChannel,
+        variable:str,
+        defaultValue:any=None
+    ):
         '''Gets a variable value for a specefic Channel.
 
-        ----------------------------------------------------------------
-        Attributes 
 
+        Attributes 
+        ---------
         channel: :class:`discord.TextChannel`
             The channel of which the data should be retrieved.
             
@@ -493,10 +574,16 @@ class Data:
                 _dataInternal.error("Error occurred while fetching user data: {0}".format(Exception))
         self._con.commit()
 
-    def setChannelVar(self , channel:discord.TextChannel, variable: str, value:any)->None:
+    def setChannelVar(
+        self,
+        channel:discord.TextChannel, 
+        variable: str,
+        value:any
+    )->None:
         '''Gets a variable value for a specefic Channel.
-        ----------------------------------------------------------------
-        .. Attributes::
+
+        Attributes
+        -------
         channel: :class:`discord.TextChannel`
             The channel of which the data should be retrieved.
             
@@ -522,13 +609,17 @@ class Data:
             self._cur.execute("UPDATE channel SET value={0} WHERE var='{1}' AND id = {2}".format(value, variable, channel.id))
         self._con.commit()
 
-    def getGuildVar(self, Guild:discord.Guild, variable:str, defaultValue:any=None):
+    def getGuildVar(
+        self, 
+        Guild:discord.Guild, 
+        variable:str, 
+        defaultValue:any=None
+    ):
         '''
         Gets a variable value for a specefic Guild.  
-        ----------------------------------------------------------------
         
-        .. Attributes::
-
+        Attributes
+        -----------
         Guild: `class` discord.Guild
             The Guild the data should be retrieved.
             
@@ -548,26 +639,43 @@ class Data:
         alpha=self._cur.execute("SELECT value FROM guild WHERE var='{1}' AND id={0}".format(Guild.id))
         try:
             if alpha.fetchall()[0][0] is None:
-                self._cur.execute("INSERT INTO guild VALUES ({0}, '{1}', {2})".format(Guild.id, variable, defaultValue)) 
+                self._cur.execute(
+                    "INSERT INTO guild VALUES ({0}, '{1}', {2})".format(
+                        Guild.id, 
+                        variable, 
+                        defaultValue
+                    )
+                ) 
                 return defaultValue
             else: return alpha.fetchall()[0][0]
         except Exception as e:
             if Exception is IndexError:
-                self._cur.execute("INSERT INTO guild VALUES ({0}, '{1}', {2})".format(Guild.id, variable, defaultValue)) 
+                self._cur.execute(
+                    "INSERT INTO guild VALUES ({0}, '{1}', {2})".format(
+                        Guild.id, 
+                        variable, 
+                        defaultValue
+                    )
+                ) 
                 return defaultValue
             else:
                 _dataInternal.error("Error occurred while fetching Guild data: {0}".format(Exception))
         self._con.commit()
 
-    def setGuildVar(self, Guild : discord.Guild, variable: str, value)->None:
+    def setGuildVar(
+        self, 
+        Guild : discord.Guild, 
+        variable : str, 
+        value
+    )->None:
         '''Sets a variable value for a specefic Guild.
-        ----------------------------------------------------------------
-        Attributes
 
+        Attributes
+        ---------
         Guild: :class:`discord.Guild`
             The Guild the data should be set.
             
-        variable : :class:`str`
+        variable: :class:`str`
             The name of the variable to set.
         
         value: :class:`any`. None if empty.
@@ -587,16 +695,20 @@ class Data:
             self._cur.execute("UPDATE guild SET value={0} WHERE var='{1}' AND id = {2}".format(value, variable, Guild.id))
         self._con.commit()
 
-    def guildLeaderboard(self, variable:str, top:int=10)->list|None:
+    def guildLeaderboard(
+        self, 
+        variable:str, 
+        top:int=10
+    )->list|None:
         '''
         Returns a list of top guild IDs for a given variable in descending order.
         
         Attributes
-        
-        variable : :class:`str`
+        ------
+        variable: :class:`str`
             Name of variable to return Leaderboard. Alerts if variable is not specified or dosent exist.
         
-        top : :class:`int`
+        top: :class:`int`
             How many top guild IDs to return. Defaults to 10.
         '''
         if top <=0:
@@ -634,16 +746,20 @@ class Data:
         except Exception as e:
             _dataInternal.warn("Fetching user leaderboard data failed! Invalid variable passed or variable dosent exist.")
         
-    def channelLeaderboard(self, variable:str, top:int=10)->list|None:
+    def channelLeaderboard(
+        self, 
+        variable:str, 
+        top:int=10
+    )->list|None:
         '''
         Returns a list of top channel IDs for a given variable in descending order.
         
         Attributes
-        
-        variable : :class:`str`
+        -----------
+        variable: :class:`str`
             Name of variable to return Leaderboard. Alerts if variable is not specified or dosent exist.
         
-        top : :class:`int`
+        top: :class:`int`
             How many top user IDs to return. Defaults to 10.
         '''
         if top <=0:
@@ -661,15 +777,6 @@ class Voice:
     ''':class:`Voice`
     ----------------------------------------------------------------
     Voice functions for your discord bot.  
-
-
-    Attributes 
-
-    client: :class:`esycord.Bot`
-        Bot instance.
-    
-    quiet: :class:`bool`
-        No logs are made and no error messages for Voice.
     
 
     IMPORTANT:
@@ -681,15 +788,31 @@ class Voice:
 
 
 
-    def __init__(self, bot:Bot, quiet:bool=False):
+    def __init__(
+        self, 
+        bot:Bot, 
+        quiet:bool=False,
+    ):
+        """
+        Attributes 
+        --------
+        client: :class:`esycord.Bot`
+            Bot instance.
+
+        quiet: :class:`bool`
+            No logs are made and no error messages for Voice.
+        """
         self._bot = bot.bot
         self.quiet=quiet
 
-    async def join(self,channel:Connectable):
+    async def join(
+        self,
+        channel:Connectable
+    ):
         '''Joins a voice channel.
-        ----------------------------------------------------------------
+
         Attributes
-        
+        -------        
         channel: :class:`esycord.Connectable`
             The channel to connect to.'''
         try:
@@ -705,12 +828,15 @@ class Voice:
             _vcInternal.error(f"Error joining voice channel {e}")
 
 
-    async def disconnect(self, guild:discord.Guild):
+    async def disconnect(
+        self, 
+        guild:discord.Guild
+    ):
         '''Disconnects from a voice channel.
-        ----------------------------------------------------------------
+
         Attributes
-        
-        channel: :class:`discord.Guild`
+        ---------
+        guild: :class:`discord.Guild`
             The guild to disconnect from.'''
         try:
             if guild.voice_client:
@@ -724,11 +850,15 @@ class Voice:
 
 
 
-    async def play(self, source: str, channel: Connectable):
+    async def play(
+        self, 
+        source: str, 
+        channel: Connectable
+    ):
         '''Plays audio from a source.
-        ----------------------------------------------------------------
-        Attributes
         
+        Attributes
+        ---------
         source: :class:`str`
             The source of the audio file.
         
@@ -741,11 +871,14 @@ class Voice:
         except Exception as e:
             _vcInternal.error(f"Voice.play() failed due to {e}")
 
-    def pause(self, channel:Connectable):
+    def pause(
+        self, 
+        channel:Connectable
+    ):
         '''Pauses the current audio.
-        ----------------------------------------------------------------
+
         Attributes
-        
+        -----------        
         channel: :class:`Connectable`
             The voice channel in which the audio is playing.'''
         voice_client = Bot.get(self._bot.voice_clients, guild=channel.guild)
@@ -755,11 +888,14 @@ class Voice:
             if not self.quiet:
                  _vcInternal.warn('Not playing audio in the given voice channel.')
 
-    def resume(self, channel: Connectable):
+    def resume(
+        self,
+        channel: Connectable
+    ):
         '''Resumes the paused audio.
-        ----------------------------------------------------------------
-        Attributes
         
+        Attributes
+        ----------
         channel: :class:`Connectable`
             The voice channel in which the audio is playing.'''
         voice_client = Bot.get(self._bot.voice_clients, guild=channel.guild)
@@ -769,11 +905,14 @@ class Voice:
             if not self.quiet:
                 _vcInternal.warn('Not paused audio in the given voice channel.')
 
-    def stop(self, channel: Connectable):
+    def stop(
+        self, 
+        channel: Connectable
+    ):
         '''Stops the current audio.
-        ----------------------------------------------------------------
-        Attributes
         
+        Attributes
+        ---------
         channel: :class:`Connectable`
             The voice channel in which the audio is playing.'''
         voice_client = Bot.get(self._bot.voice_clients, guild=channel.guild)
@@ -805,7 +944,16 @@ class Webhook:
         $py web.py
         2025-02-15 14:02:14 SUCCESS  :     esycord.Webhook : [204] Message sent succesfully.
     '''
-    def __init__(self, webhook_url: str):
+    def __init__(
+        self, 
+        webhook_url: str
+    ):
+        """
+        Attributes
+        --------
+        webhook_url: :class:`str`
+            URL of the webhook.
+        """
         try:
             self.webhook_url = webhook_url
             self.session = requests.Session()
@@ -899,11 +1047,15 @@ class Webhook:
             x=self._wb.send(*args)
             _wbInternal.success("Sent message.")
         except Exception as e: _wbInternal.error("Exception: %s" % e)
-    def edit_message(self, message:discord.Message|discord.SyncWebhookMessage,*args):
+    def edit_message(
+        self, 
+        message:discord.Message|discord.SyncWebhookMessage,
+        *args
+    ):
         '''Edits a message.
-        ----------------------------------------------------------------
-        Attributes
         
+        Attributes
+        ---------
         message: :class:`discord.Message`
             The message to edit.
         
@@ -937,11 +1089,14 @@ class Webhook:
         except Exception as e: _wbInternal.error(f"An error occurred: {e}")
         
 
-    def delete_message(self, message:discord.Message|discord.SyncWebhookMessage):
+    def delete_message(
+        self, 
+        message:discord.Message|discord.SyncWebhookMessage
+    ):
         '''Deletes a message.
-        ----------------------------------------------------------------
-        Attributes
         
+        Attributes
+        -------
         message_id: :class:`discord.Message`|:class:`discord.SyncWebhookMessage`
             The message to delete.'''
         self._wb.delete_message(message_id=message.id)

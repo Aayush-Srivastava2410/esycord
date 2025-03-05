@@ -1,6 +1,7 @@
 import argparse
 import sys
-from .esycord import Bot, discord
+from discord.ext.commands import Bot
+import discord
 from .__internals import _btInternal
 import platform
 import importlib
@@ -10,24 +11,24 @@ from . import version_info as evf
 def version(*args, **kwargs) -> None:
     entries = []
 
-    entries.append('-> Python v{0.major}.{0.minor}.{0.micro}-{0.releaselevel}'.format(sys.version_info))
+    entries.append(' Python v{0.major}.{0.minor}.{0.micro}-{0.releaselevel}'.format(sys.version_info))
     version_info_es = evf
-    entries.append('-> esycord v{0.major}.{0.minor}.{0.micro}-{0.releaselevel}'.format(version_info_es))
-    if version_info_es.releaselevel != 'final':
+    entries.append(' esycord v{0.major}.{0.minor}.{0.micro}-{0.releaselevel}'.format(evf))
+    if version_info_es["releaselevel"] != 'final':
         version = importlib.metadata.version('esycord')
         if version:
-            entries.append(f'    -> esycord metadata: v{version}')
+            entries.append(f'     esycord metadata: v{version}')
 
     version_info = discord.version_info
-    entries.append('-> discord.py v{0.major}.{0.minor}.{0.micro}-{0.releaselevel}'.format(version_info))
+    entries.append(' discord.py v{0.major}.{0.minor}.{0.micro}-{0.releaselevel}'.format(version_info))
     if version_info.releaselevel != 'final':
         version = importlib.metadata.version('discord.py')
         if version:
-            entries.append(f'    -> discord.py metadata: v{version}')
-    entries.append(f'-> aiohttp v{aiohttp.__version__}')
+            entries.append(f'     discord.py metadata: v{version}')
+    entries.append(f' aiohttp v{aiohttp.__version__}')
     uname = platform.uname()
-    entries.append('-> system info: {0.system} {0.release} {0.version}'.format(uname))
-    return '\n'.join(entries)
+    entries.append(' system info: {0.system} {0.release} {0.version}'.format(uname))
+    return ';'.join(entries)
 
 
 bot= r"""from esycord import *
@@ -66,12 +67,12 @@ bot.run(_token_)"""
 
 parser = argparse.ArgumentParser(
   prog = "esycord",
-  description= "This menu helps you make out an example for esycord. \n Version Info: \n {0}".format(version()),
-  add_help=True
+  description= "This menu helps you make out an example for esycord.",
+  add_help=True,
 )
 
 parser.add_argument(
-  "-example", choices=["bot", "webhook", "data"],
+  '-e',"--example", choices=["bot", "webhook", "data"],
   help="Makes an example for selected option.",
   required=False,
   default="empty"
@@ -85,19 +86,33 @@ parser.add_argument(
 )
 parser.add_argument(
   "--gimme-discord-appbadge", default="empty", type=str,
-  help="If you just want the discord active developmer badge, do this with --gimme-discord-appbadge [token]",
+  help="If you just want the discord active developer badge, do this with --gimme-discord-appbadge [token]",
   required=False, metavar="[token]"
 )
-
-
+parser.add_argument(
+   "--version", help="Display client version and exit.",
+   action='version', version=version()
+)
+parser.add_argument(
+   "-r", "--run" , default=None, help="Run an esycord script",
+   metavar="[.py file]", type=argparse.FileType("r"), required=False,
+)
 
 
 args = parser.parse_args()
 
+if args.version:version()
 if args.example=='bot':args.log.write(bot)
 if args.example=='webhook':args.log.write(webhook)
 if args.example=='data':args.log.write(data)
-if args.example=='empty' and args.gimme_discord_appbadge=="empty":print("No option selected. See help [py -m esycord -h]")
+if args.example=='empty' and args.gimme_discord_appbadge=="empty":
+   if args.version:pass
+   if args.run:
+      a=args.run.read()
+      if "import esycord" or "__import__('esycord')" or "from esycord" or '__import__("esycord")' in a:
+        exec(a)
+      else:print("esycord not imported!")
+   else:print("No option selected. See help [py -m esycord -h]")
 
 if args.gimme_discord_appbadge!= "empty":
   bot=Bot("!")
