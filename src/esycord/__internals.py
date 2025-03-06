@@ -129,39 +129,24 @@ class _vcInternal:
 def update_checker():
     try:
         josn=requests.get('https://pypi.org/pypi/esycord/json').json()
+        if josn["releases"].popitem()[0]!=__version__:
+            print(colorama.Style.DIM + colorama.Fore.LIGHTBLACK_EX+ time.strftime("%Y-%m-%d %H:%m:%S"), end=' ')
+            print(colorama.Style.BRIGHT + colorama.Fore.GREEN + f'INFO     :', end='     ' )
+            print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord :", end=' ')
+            print(colorama.Style.BRIGHT+"A new distribution of esycord is available!")
+            print(f"Current Version : {__version__}. Latest Release : {josn["releases"].popitem()[0]}", end=' ')
+            
+            while True:
+                x=input(colorama.Style.BRIGHT+"Update? (y/n): ").lower().strip()
+                if x in ['y', 'n']:break
+                else:print("Please select a valid choice!")
+            
+            if x=='y':
+                system("python3 -m pip install -U esycord")
+                print("Update Successfully installed. Rerun your script now.")
+            elif x=='n':pass
     except:
         print(colorama.Style.DIM + colorama.Fore.LIGHTBLACK_EX+ time.strftime("%Y-%m-%d %H:%m:%S"), end=' ')
         print(colorama.Style.BRIGHT + colorama.Fore.RED + f'ERROR    :', end='     ' )
         print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord :", end=' ')
         print(colorama.Style.BRIGHT+"Version Check failed. Continuing...")
-    if josn["releases"].popitem()[0]!=__version__:
-        print(colorama.Style.DIM + colorama.Fore.LIGHTBLACK_EX+ time.strftime("%Y-%m-%d %H:%m:%S"), end=' ')
-        print(colorama.Style.BRIGHT + colorama.Fore.GREEN + f'INFO     :', end='     ' )
-        print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord :", end=' ')
-        print(colorama.Style.BRIGHT+"A new distribution of esycord is available!")
-        print(f"Current Version : {__version__}. Latest Release : {josn["releases"].popitem()[0]}", end=' ')
-        
-        while True:
-            x=input(colorama.Style.BRIGHT+"Update? (y/n): ").lower().strip()
-            if x in ['y', 'n']:break
-            else:print("Please select a valid choice!")
-        
-        if x=='y':
-            system("python3 -m pip install -U esycord")
-            print("Update Successfully installed. Rerun your script now.")
-        elif x=='n':pass
-            
-
-'''
-_btInternal.error('Error')
-_btInternal.success('Success')
-_btInternal.status('Info')
-_btInternal.warn('Warning')
-_dataInternal.error('Error')
-_dataInternal.success('Success')
-_dataInternal.status('Info')
-_dataInternal.warn('Warning')
-_wbInternal.error('Error')
-_wbInternal.success('Success')
-_wbInternal.status('Info')
-_wbInternal.warn('Warning')'''
