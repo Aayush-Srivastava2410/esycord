@@ -1,5 +1,5 @@
 esycord v1.6.4
-==========
+==================
 
 .. image:: https://discord.com/api/guilds/336642139381301249/embed.png
    :target: https://discord.com/users/795873954668871731
@@ -48,6 +48,7 @@ Bot Example
 
 1. Python Example
 
+
 .. code:: py
 
     import esycord
@@ -64,7 +65,9 @@ Bot Example
     
     bot.run()
 
+
 2. Load library example.
+
 
 .. code:: sh
 
