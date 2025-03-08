@@ -21,32 +21,35 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-import requests
-from discord import (
-  Intents, 
-  Interaction, 
-  Embed
-)
-import discord
-from discord.ext import commands 
-from discord.abc import (
-    Connectable,
-    Messageable
-)
-import sqlite3 as sql
-from .__internals import (
-    _dataInternal,
-    _wbInternal, 
-    _btInternal,
-    _vcInternal,
-    update_checker as update_checker_func
-)
-from typing import (
-  Union, 
-  Iterable, 
-  AsyncIterable
-)
-import os
+try:
+    import requests
+    from discord import (
+    Intents, 
+    Interaction, 
+    Embed
+    )
+    import discord
+    from discord.ext import commands 
+    from discord.abc import (
+        Connectable,
+        Messageable
+    )
+    import sqlite3 as sql
+    from .__internals import (
+        _dataInternal,
+        _wbInternal, 
+        _btInternal,
+        _vcInternal,
+        update_checker as update_checker_func
+    )
+    from typing import (
+    Union, 
+    Iterable, 
+    AsyncIterable
+    )
+    import os
+except Exception as e:
+    print(f"A fatal error occurred: {e}. Please reinstall esycord or its dependencies.")
 
 Interaction=Interaction
 Embed = Embed
@@ -173,6 +176,7 @@ class Bot:
     def run(
         self, 
         token:str=None ,
+        verbose:bool=False,
         update_checker:bool=True,
         *args
     )->None:
@@ -186,12 +190,18 @@ class Bot:
             The token for your bot. Will work even if the token 
             is configured on your environment variables as `ESYCORD_TOKEN`.
         
+        verbose: :class:`bool`
+            Will insitialise the discord :module:`logging` feature as well.
+        
+        update_checker: :class:`bool`
+            Check for updates.
+        
         And all other attributes passed to :meth:`discord.ext.commands.Bot.run()`
         """
     
 
         try:
-            if token == None: token = os.getenv('ESYCORD_TOKEN')
+            if token.strip() == None or '': token = os.getenv('ESYCORD_TOKEN')
             _btInternal.status('Verifying credentials and logging in...')
             @self.event()
             async def on_ready():
@@ -202,8 +212,9 @@ class Bot:
             if token==None: 
                 _btInternal.error("Token not found!")
                 exit(400)
-
-            self.bot.run(token=token, log_handler=None, *args)
+            if not verbose:
+                self.bot.run(token=token.strip(), log_handler=None, *args)
+            else: self.bot.run(token=token.strip(), *args)
 
         except Exception as e:
             _btInternal.error("An error occoured while initialisation: {0}".format(e))
@@ -329,6 +340,92 @@ class Bot:
             Keyword arguments that denote attributes to search with.
         """
         return Bot.get(iterable=iterable, **attrs)
+    
+    async def send_message(
+        self,
+        channel:Messageable,
+        *args,
+        **kwargs
+    ):
+        """Sends a message to the destination with the given content.
+
+        Parameters
+        ------------
+        content: Optional[:class:`str`]
+            The content of the message to send.
+        tts: :class:`bool`
+            Indicates if the message should be sent using text-to-speech.
+        embed: :class:`~discord.Embed`
+            The rich embed for the content.
+        embeds: List[:class:`~discord.Embed`]
+            A list of embeds to upload. Must be a maximum of 10.
+
+        file: :class:`~discord.File`
+            The file to upload.
+        files: List[:class:`~discord.File`]
+            A list of files to upload. Must be a maximum of 10.
+        nonce: :class:`int`
+            The nonce to use for sending this message. If the message was successfully sent,
+            then the message will have a nonce with this value.
+        delete_after: :class:`float`
+            If provided, the number of seconds to wait in the background
+            before deleting the message we just sent. If the deletion fails,
+            then it is silently ignored.
+        allowed_mentions: :class:`~discord.AllowedMentions`
+            Controls the mentions being processed in this message. If this is
+            passed, then the object is merged with :attr:`~discord.Client.allowed_mentions`.
+            The merging behaviour only overrides attributes that have been explicitly passed
+            to the object, otherwise it uses the attributes set in :attr:`~discord.Client.allowed_mentions`.
+            If no object is passed at all then the defaults given by :attr:`~discord.Client.allowed_mentions`
+            are used instead.
+
+
+        reference: Union[:class:`~discord.Message`, :class:`~discord.MessageReference`, :class:`~discord.PartialMessage`]
+            A reference to the :class:`~discord.Message` to which you are replying, this can be created using
+            :meth:`~discord.Message.to_reference` or passed directly as a :class:`~discord.Message`. You can control
+            whether this mentions the author of the referenced message using the :attr:`~discord.AllowedMentions.replied_user`
+            attribute of ``allowed_mentions`` or by setting ``mention_author``.
+
+
+        mention_author: Optional[:class:`bool`]
+            If set, overrides the :attr:`~discord.AllowedMentions.replied_user` attribute of ``allowed_mentions``.
+
+        view: :class:`discord.ui.View`
+            A Discord UI View to add to the message.
+
+        stickers: Sequence[Union[:class:`~discord.GuildSticker`, :class:`~discord.StickerItem`]]
+            A list of stickers to upload. Must be a maximum of 3.
+
+        suppress_embeds: :class:`bool`
+            Whether to suppress embeds for the message. This sends the message without any embeds if set to ``True``.
+
+        silent: :class:`bool`
+            Whether to suppress push and desktop notifications for the message. This will increment the mention counter
+            in the UI, but will not actually send a notification.
+
+        poll: :class:`~discord.Poll`
+            The poll to send with this message.
+
+
+        Raises
+        --------
+        ~discord.HTTPException
+            Sending the message failed.
+        ~discord.Forbidden
+            You do not have the proper permissions to send the message.
+        ValueError
+            The ``files`` or ``embeds`` list is not of the appropriate size.
+        TypeError
+            You specified both ``file`` and ``files``,
+            or you specified both ``embed`` and ``embeds``,
+            or the ``reference`` object is not a :class:`~discord.Message`,
+            :class:`~discord.MessageReference` or :class:`~discord.PartialMessage`.
+
+        Returns
+        ---------
+        :class:`~discord.Message`
+            The message that was sent."""
+        return await channel.send(args, kwargs)
 
 class Data:
     '''
@@ -1115,7 +1212,11 @@ class Button:
     def setview(self, vew):
         self._view = vew
     
-    def __init__(self, buttons: list):
+    @property
+    def buttonlist(self):
+        return self._view.children
+    
+    def __init__(self, buttons: list[discord.Button]):
         """Pass a list of your buttons to 
         this class to initialize a :class:`discord.View` class.
         
@@ -1125,9 +1226,10 @@ class Button:
             All your buttons in a list."""
         self._buttonList = buttons
         self._view = discord.ui.View()
+        if len(buttons)>25:_btInternal.fatal("Improper number of buttons! Must be at most 25!")
         for i in buttons: self._view.add_item(i)
     
-    async def send_message(
+    async def send_buttoned_msg(
         self,
         channel:Messageable,
         *args,

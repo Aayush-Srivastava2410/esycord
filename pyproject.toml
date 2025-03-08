@@ -4,10 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "esycord"
-version = "1.6.2"
+version = "1.6.4"
 
 dependencies = ["discord", "aiohttp>=3.9.5","pynacl>=1.5.0", "colorama","requests"]
-requires-python = ">=3.9"
+requires-python = ">=3.5"
 
 authors =[
     { name = "Aayush Srivastava", discord = "aayush.2410"}

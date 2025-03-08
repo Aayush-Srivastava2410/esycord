@@ -1,5 +1,5 @@
 """
-Esycord Discord API Plugin
+esycord Discord API Plugin
 ==================================
 A very beginner friendly package
 for all those who want to make a Discord
@@ -8,14 +8,12 @@ Discord's API Wrapper (discord.py).
 
 :copyright: (c) 2024 Aayush Srivastava
 :license: MIT
-
-
 """
 
 __title__ ='esycord Discord API Plugin'
 __author__ ='Aayush Srivastava'
 __contact__ = 'https://discord.com/users/795873954668871731'
-__version__ ='1.6.3'
+__version__ ='1.6.4'
 __lisence__ ='MIT Lisence'
 __repository__ = 'https://github.com/Aayush-Srivastava2410/esycord'
 __issues__ ='https://github.com/Aayush-Srivastava2410/esycord/issues'
@@ -30,7 +28,8 @@ __all__=(
     'discord',
     'Interaction',
     'Connectable',
-    'Embed'
+    'Embed',
+    'Button'
 )
 
 
@@ -45,7 +44,8 @@ from .esycord import (
     discord,
     Interaction,
     Connectable,
-    Embed
+    Embed,
+    Button
 )
 
 
@@ -60,7 +60,7 @@ class VersionInfo(NamedTuple):
     releaselevel: Literal["alpha", "beta", "candidate", "final"]
 
 
-version_info: VersionInfo = VersionInfo(major=1, minor=6, micro=3,  releaselevel='final')
+version_info: VersionInfo = VersionInfo(major=1, minor=6, micro=4,  releaselevel='final')
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 

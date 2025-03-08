@@ -55,6 +55,11 @@ class _btInternal:
         print(colorama.Style.BRIGHT + colorama.Fore.CYAN + f'INFO     :', end='     ' )
         print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord.Bot :", end=' ')
         print(colorama.Style.BRIGHT+msg)
+    def fatal(msg):
+        print(colorama.Style.DIM + colorama.Fore.LIGHTBLACK_EX+ time.strftime("%Y-%m-%d %H:%m:%S"), end=' ')
+        print(colorama.Style.BRIGHT + colorama.Fore.RED + f'FATAL    :', end='     ' )
+        print(colorama.Style.BRIGHT + colorama.Fore.RED + "esycord.Bot :", end=' ')
+        print(colorama.Style.BRIGHT+msg)
 
 class _dataInternal:
     def error(msg):
@@ -134,7 +139,7 @@ def update_checker():
             print(colorama.Style.BRIGHT + colorama.Fore.GREEN + f'INFO     :', end='     ' )
             print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord :", end=' ')
             print(colorama.Style.BRIGHT+"A new distribution of esycord is available!")
-            print(f"Current Version : {__version__}. Latest Release : {josn["releases"].popitem()[0]}", end=' ')
+            print(f'Current Version : {__version__}. Latest Release : {josn["releases"].popitem()[0]}', end=' ')
             
             while True:
                 x=input(colorama.Style.BRIGHT+"Update? (y/n): ").lower().strip()
@@ -147,6 +152,6 @@ def update_checker():
             elif x=='n':pass
     except:
         print(colorama.Style.DIM + colorama.Fore.LIGHTBLACK_EX+ time.strftime("%Y-%m-%d %H:%m:%S"), end=' ')
-        print(colorama.Style.BRIGHT + colorama.Fore.RED + f'ERROR    :', end='     ' )
-        print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord :", end=' ')
+        print(colorama.Style.BRIGHT + colorama.Fore.YELLOW + f'WARNING  :', end='     ' )
+        print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord :    ", end=' ')
         print(colorama.Style.BRIGHT+"Version Check failed. Continuing...")

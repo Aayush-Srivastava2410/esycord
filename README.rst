@@ -1,4 +1,4 @@
-esycord
+esycord v1.6.4
 ==========
 
 .. image:: https://discord.com/api/guilds/336642139381301249/embed.png
@@ -17,7 +17,7 @@ This is a very beginner friendly package for all those who wanna make a Discord 
 Installing
 ----------
 
-**Python 3.11 or higher is required**
+**Python 3.5 or higher is required**
 
 1. pip Installation  
 
@@ -46,6 +46,8 @@ Installing
 Bot Example
 ----------------
 
+1. Python Example
+
 .. code:: py
 
     import esycord
@@ -54,16 +56,25 @@ Bot Example
     intents.message_content = True
 
     bot = esycord.Bot('!', intents=intents)
-    @bot.event
-    async def on_ready():
-        print(f'Logged in as {bot.user}')
     
     @bot.event
     async def on_message(message):
     if message == 'ping':
         await message.channel.send('pong')
     
-    bot.run('token')
+    bot.run()
+
+2. Load library example.
+
+.. code:: sh
+
+    # Windows
+    py -3 -m esycord -e bot 
+    py -3 -m esycord -r esycord_example.py
+
+    # Linux/macOS
+    python3 -m esycord -e bot
+    python3 -m esycord -r esycord_example.py
 
 
 Links
@@ -72,5 +83,3 @@ Links
 - `Documentation <https://github.com/Aayush-Srivastava2410/esycord/wiki>`_
 - `Discord User <https://discord.gg/users/795873954668871731>`_
 - `Repository <https://github.com/Aayush-Srivastava2410/esycord>`_
-
-*Latest version :: 1.6.1*
