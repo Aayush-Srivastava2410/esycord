@@ -155,3 +155,14 @@ def update_checker():
         print(colorama.Style.BRIGHT + colorama.Fore.YELLOW + f'WARNING  :', end='     ' )
         print(colorama.Style.BRIGHT + colorama.Fore.BLUE + "esycord :    ", end=' ')
         print(colorama.Style.BRIGHT+"Version Check failed. Continuing...")
+
+def timer():
+    start_time = time.time()
+    try: 
+        while True:
+            elapsed = time.time() - start_time
+            mins=int(elapsed/60)
+            sec=int(elapsed%60)
+            print(colorama.Style.BRIGHT+f"\rElapsed: {mins:02}:{sec:02}")
+    except KeyboardInterrupt:
+        print(colorama.Style.BRIGHT+"Exiting...")

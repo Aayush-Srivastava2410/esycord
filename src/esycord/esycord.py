@@ -29,6 +29,7 @@ try:
     Embed
     )
     import discord
+    import threading
     from discord.ext import commands 
     from discord.abc import (
         Connectable,
@@ -40,7 +41,8 @@ try:
         _wbInternal, 
         _btInternal,
         _vcInternal,
-        update_checker as update_checker_func
+        update_checker as update_checker_func,
+        timer as timer
     )
     from typing import (
     Union, 
@@ -207,6 +209,8 @@ class Bot:
             async def on_ready():
                 _btInternal.success('Logged in to discord as {0}'.format(self.bot.user.name))    
                 await self.tree.sync()
+                t= threading.Thread(target=timer)
+                t.run()
             
             if update_checker: update_checker_func()
             if token==None: 
