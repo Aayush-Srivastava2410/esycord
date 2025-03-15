@@ -11,8 +11,9 @@ from . import (
   version_info as evf,
   Webhook
 )
+from .data import arg_idle
 
-update_checker()
+
 def version(*args, **kwargs) -> None:
     entries = []
 
@@ -106,11 +107,21 @@ parser.add_argument(
    "-w", "--webhook", default=None, help="Send a basic webhook test message",
    metavar="[URL]"
 )
+parser.add_argument(
+   "-d", '--data', help="Launch an IDLE like environment to read an esycord database.",
+   action='store_true', default=False
+)
+
+parser.add_argument(
+   "-nuc", '--no-update-check', help="Dont check for updates",
+   action='store_false', default=True
+)
 
 
 args = parser.parse_args()
 
-
+if args.no_update_check:
+   update_checker()
 if args.example=='bot':
    args.log.write(
       bot.format(
@@ -149,6 +160,6 @@ if args.gimme_discord_appbadge!= None:
     if e != KeyboardInterrupt:   
       _btInternal.error(f"An error occurred while initializing: {e}")
   
-
+if args.data:arg_idle()
 
 args.log.close()

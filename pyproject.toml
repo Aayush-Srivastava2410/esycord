@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "esycord"
-version = "1.6.5"
+version = "1.6.6"
 
 dependencies = ["discord", "aiohttp>=3.9.5","pynacl>=1.5.0", "colorama","requests"]
 requires-python = ">=3.5"
@@ -21,6 +21,10 @@ classifiers = [
 
   "License :: OSI Approved :: MIT License",
 
+  "Programming Language :: Python :: 3.5",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
